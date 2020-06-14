@@ -63,14 +63,14 @@ train_classes = pd.read_csv(path+'trainclasses.txt',header=None)
 test_classes = pd.read_csv(path+'testclasses.txt',header=None)
 
 traindata,trainlabel = load_data(train_classes, num='max')
-np.save(path+'AwA2_seen_x.npy',traindata)
-np.save(path+'AwA2_seen_y.npy',trainlabel)
+np.save(path+'traindata.npy',traindata)
+np.save(path+'trainlabel.npy',trainlabel)
 
 print(traindata.shape,trainlabel.shape)
 
 testdata,testlabel = load_data(test_classes, num='max')
-np.save(path+'AwA2_unseen_x.npy',testdata)
-np.save(path+'AwA2_unseen_y.npy',testlabel)
+np.save(path+'testdata.npy',testdata)
+np.save(path+'testlabel.npy',testlabel)
 
 print(testdata.shape,testlabel.shape)
 

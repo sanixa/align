@@ -9,8 +9,8 @@ import cv2
 from PIL import Image
 import scipy.io
 
-image_size = 224          # 指定图片大小
-path = '/Users/keiko/tensorflow/CUB_200_2011/CUB_200_2011/'   #文件读取路径
+image_size = 128          # 指定图片大小
+path = '/home/uscc/Downloads/CUB_200_2011/CUB_200_2011/'   #文件读取路径
 
 '''
 classname = pd.read_csv(path+'classes.txt',header=None,sep = ' ')
@@ -36,13 +36,13 @@ def load_Img(imgDir):
         temp[:,:,1] = arr
         temp[:,:,2] = arr
         arr = temp
-    if arr.shape == (224,224,4):
+    if arr.shape == (image_size,image_size,4):
         temp = np.empty((image_size,image_size,3),dtype="float16")
         temp[:,:,0] = arr[:,:,0]
         temp[:,:,1] = arr[:,:,1]
         temp[:,:,2] = arr[:,:,2]
         arr = temp
-    if arr.shape != (224,224,3):
+    if arr.shape != (image_size,image_size,3):
         print('error', imgDir)
     return arr
 
@@ -50,9 +50,13 @@ def load_data():
     
     train_data_list = []
     train_label_list = []
+    train_attr_list = []
     test_data_list = []
     test_label_list = []
-    
+    test_attr_list = []
+
+    with open(path+'attributes/class_attribute_labels_continuous.txt', 'r') as f:
+        attr = f.readlines()
     with open(path+'image_class_labels.txt', 'r') as f:
         label = f.readlines()
     with open(path+'images.txt', 'r') as f:
@@ -69,34 +73,29 @@ def load_data():
         if split[i].split()[1] == str(1): ##train set
             train_data_list.append(tup)
             train_label_list += [img_label]
+            train_attr_list += [attr[int(img_label)].split(' ')]
         elif split[i].split()[1] == str(0): ##test set
             test_data_list.append(tup)
             test_label_list += [img_label]
+            test_attr_list += [attr[int(img_label)].split(' ')]
           
-    return np.row_stack(train_data_list).reshape(-1, 224, 224, 3), np.array(train_label_list), np.row_stack(test_data_list).reshape(-1, 224, 224, 3), np.array(test_label_list)
+    return np.row_stack(train_data_list).reshape(-1, image_size, image_size, 3), np.array(train_label_list), np.array(train_attr_list), np.row_stack(test_data_list).reshape(-1, image_size, image_size, 3), np.array(test_label_list), np.array(test_attr_list)
 
 
-#train_classes = pd.read_csv(path+'trainclasses.txt',header=None)
-#test_classes = pd.read_csv(path+'testclasses.txt',header=None)
 
-'''
-with open(path+'image_class_labels.txt', 'r') as f:
-    label = f.readlines()
-with open(path+'images.txt', 'r') as f:
-    images = f.readlines()
-with open(path+'train_test_split.txt', 'r') as f:
-    split = f.readlines()
-    
-print(label, images, split)
-'''
-traindata, trainlabel, testdata, testlabel = load_data()
-np.save(path+'CUB_traindata.npy',traindata)
-np.save(path+'CUB_trainlabel.npy',trainlabel)
+traindata, trainlabel, trainattr, testdata, testlabel, testattr = load_data()
+np.save(path+'traindata.npy',traindata)
+np.save(path+'trainlabel.npy',trainlabel)
+np.save(path+'trainattr.npy',trainattr)
 
-print(traindata.shape,trainlabel.shape)
+print(traindata.shape,trainlabel.shape, trainattr.shape)
 
-np.save(path+'CUB_testdata.npy',testdata)
-np.save(path+'CUB_testlabel.npy',testlabel)
+np.save(path+'testdata.npy',testdata)
+np.save(path+'testlabel.npy',testlabel)
+np.save(path+'testattr.npy',testattr)
 
-print(testdata.shape,testlabel.shape)
+print(testdata.shape,testlabel.shape, testattr.shape)
+
+
+
 

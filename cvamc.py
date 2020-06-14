@@ -15,7 +15,7 @@ import pandas as pd
 from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from scipy.stats import norm
-import os
+import os, sys
 
 import keras
 from keras.layers import Input, Dense, Lambda, Reshape, Flatten, Dropout
@@ -93,39 +93,52 @@ class Scaler(keras.layers.Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-batch_size = 50
+batch_size = 64
 input_shape = (224, 224, 3)
 kernel_size = 3
 filters = 16
-latent_dim = 64
+latent_dim = 128
 intermediate_dim = 64
 epochs = 1000
-num_classes = 38
-unseen_class = [0, 6, 7, 11, 15, 16, 18, 20, 22, 25, 27, 36, 37]
-num_unseen_classes = 13
+num_classes = -1
 
-path = 'data/plant/'
+argv = sys.argv
+dataset = argv[1]
+if dataset == 'SUN':
+    num_classes = 724
+    input_shape = (128, 128, 3)
+elif dataset == 'cifar10':
+    num_classes = 10
+    input_shape = (28, 28, 3)
+elif dataset == 'plant':
+    num_classes = 38
+elif dataset == 'AwA2':
+    num_classes = 50
+elif dataset == 'CUB':
+    num_classes = 200
+    input_shape = (128, 128, 3)
 
-#seen_x = np.load(path+'plant_seen_x_100.npy')
-#seen_y = np.load(path+'plant_seen_y_100.npy')
 
+seen_x = np.load('data/'+ dataset +'/traindata.npy')
+seen_y = np.load('data/'+ dataset +'/trainlabel.npy')
 
-classname = pd.read_csv(path+'classes.txt',header=None,sep = '\t')
+'''
+classname = pd.read_csv('data/'+ dataset +'/classes.txt',header=None,sep = '\t')
 dic_class2name = {classname.index[i]:classname.loc[i][1] for i in range(classname.shape[0])}    
 dic_name2class = {classname.loc[i][1]:classname.index[i] for i in range(classname.shape[0])}
+'''
+x_train, x_test, y_train, y_test = train_test_split(seen_x, seen_y, test_size=0.20, random_state=42)
 
-#x_train, x_test, y_train, y_test = train_test_split(seen_x, seen_y, test_size=0.20, random_state=42)
-
-#np.save(path+'x_train_100.npy', x_train)
-#np.save(path+'x_test_100.npy', x_test)
-#np.save(path+'y_train_100.npy', y_train)
-#np.save(path+'y_test_100.npy', y_test)
+np.save('data/'+ dataset +'/x_train.npy', x_train)
+np.save('data/'+ dataset +'/x_test.npy', x_test)
+np.save('data/'+ dataset +'/y_train.npy', y_train)
+np.save('data/'+ dataset +'/y_test.npy', y_test)
 
 
-x_train = np.load(path+'x_train_100.npy')
-x_test = np.load(path+'x_test_100.npy')
-y_train = np.load(path+'y_train_100.npy')
-y_test = np.load(path+'y_test_100.npy')
+#x_train = np.load('data/'+ dataset +'/x_train.npy')
+#x_test = np.load('data/'+ dataset +'/x_test.npy')
+#y_train = np.load('data/'+ dataset +'/y_train.npy')
+#y_test = np.load('data/'+ dataset +'/y_test.npy')
 
 y_train = to_categorical(y_train, num_classes)
 y_test = to_categorical(y_test, num_classes)
@@ -134,6 +147,8 @@ y_test = to_categorical(y_test, num_classes)
 #print(x_test.shape)
 #print(y_train.shape)
 #print(y_test.shape)
+
+
 
 x_in = Input(shape=input_shape)
 x = x_in
@@ -281,12 +296,12 @@ vae.fit([x_train, y_train],
 history.loss_plot('epoch')
 
 mean_encoder = Model(x_in, z_plus_mean)
-mean_encoder.save('model/plant/mean_encoder_scale.h5')
+mean_encoder.save('model/' + dataset +'/mean_encoder_scale.h5')
 
 var_encoder = Model(x_in, z_plus_log_var)
-var_encoder.save('model/plant/var_encoder_scale.h5')
+var_encoder.save('model/' + dataset + '/var_encoder_scale.h5')
 
-decoder.save('model/plant/generator_scale.h5')
+decoder.save('model/' + dataset + '/generator_scale.h5')
 
 mu = Model(y_in, yh)
-mu.save('model/plant/y_encoder_scale.h5')
+mu.save('model/' + dataset + '/y_encoder_scale.h5')

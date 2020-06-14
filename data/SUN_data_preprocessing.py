@@ -9,8 +9,8 @@ import cv2
 from PIL import Image
 import scipy.io
 
-image_size = 224          # 指定图片大小
-path = '/Users/keiko/tensorflow/SUNAttributeDB/'   #文件读取路径
+image_size = 128          # 指定图片大小
+path = '/home/uscc/Downloads/SUNAttributeDB/'   #文件读取路径
 
 
 classname = pd.read_csv(path+'classes.txt',header=None,sep = ',')
@@ -19,7 +19,7 @@ dic_name2class = {classname.loc[i][1]:classname.index[i] for i in range(classnam
 # 两个字典，记录标签信息，分别是数字对应到文字，文字对应到数字
 
 images = scipy.io.loadmat(path +'images.mat')
-attributes = scipy.io.loadmat(path +'attributes.mat')
+attributes = scipy.io.loadmat(path +'attributeLabels_continuous.mat')
 #print(images['images'][1][0][0])
 '''
 img = Image.open('/Users/keiko/tensorflow/SUNAttributeDB/images/t/terrace_farm/sun_bmmnpaheooapqpes.jpg')
@@ -57,13 +57,13 @@ def load_Img(imgDir):
         temp[:,:,1] = arr
         temp[:,:,2] = arr
         arr = temp
-    if arr.shape == (224,224,4):
+    if arr.shape == (image_size,image_size,4):
         temp = np.empty((image_size,image_size,3),dtype="float16")
         temp[:,:,0] = arr[:,:,0]
         temp[:,:,1] = arr[:,:,1]
         temp[:,:,2] = arr[:,:,2]
         arr = temp
-    if arr.shape != (224,224,3):
+    if arr.shape != (image_size,image_size,3):
         print('error', imgDir)
     return arr
 
@@ -71,6 +71,7 @@ def load_data(data):
     
     data_list = []
     label_list = []
+    attr_list = []
    
     
     for i in range(len(images['images'])):#
@@ -82,8 +83,9 @@ def load_data(data):
 
         label_list += [dic_name2class[images['images'][i][0][0][:split_class_idx]]]
 
+        attr_list += [attributes['labels_cv'][i]]
           
-    return np.row_stack(data_list).reshape(-1, 224, 224, 3),np.array(label_list)
+    return np.row_stack(data_list).reshape(-1, image_size, image_size, 3),np.array(label_list), np.array(attr_list)
 
 
 #train_classes = pd.read_csv(path+'trainclasses.txt',header=None)
@@ -96,16 +98,18 @@ with open(path+'trainclasses.txt', 'r') as f:
 with open(path+'testclasses.txt', 'r') as f:
     testclasses = f.readlines()
 
-traindata,trainlabel = load_data(trainclasses)
+traindata,trainlabel,trainattr = load_data(trainclasses)
 
-np.save(path+'SUN_traindata.npy',traindata)
-np.save(path+'SUN_trainlabel.npy',trainlabel)
+np.save(path+'traindata.npy',traindata)
+np.save(path+'trainlabel.npy',trainlabel)
+np.save(path+'trainattr.npy',trainattr)
 
-print(traindata.shape,trainlabel.shape)
+print(traindata.shape,trainlabel.shape, trainattr.shape)
 
-testdata,testlabel = load_data(testclasses)
-np.save(path+'SUN_testdata.npy',testdata)
-np.save(path+'SUN_testlabel.npy',testlabel)
+testdata,testlabel,testattr = load_data(testclasses)
+np.save(path+'testdata.npy',testdata)
+np.save(path+'testlabel.npy',testlabel)
+np.save(path+'testattr.npy',testattr)
 
-print(testdata.shape,testlabel.shape)
+print(testdata.shape,testlabel.shape, testattr.shape)
 

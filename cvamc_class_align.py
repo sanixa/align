@@ -16,7 +16,7 @@ from sklearn.model_selection import train_test_split
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import os
-import sys
+import sys, scipy.io
 
 import keras
 from keras.layers import Input, Dense, Lambda, Reshape, Flatten, Dropout
@@ -94,28 +94,51 @@ class Scaler(keras.layers.Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-batch_size = 50
+batch_size = 128
 class_input_shape = -1
 learned_input_shape = -1
 class_output_dim = -1
 learned_output_dim = -1
+
 #---------------
 argv = sys.argv
-if argv[1] == '':
-    class_input_shape = 
-    learned_input_shape = 
-    class_output_dim = 
-    learned_output_dim = 
+dataset = argv[1]
 
-latent_dim = 64
-intermediate_dim = 64
+
+if dataset == 'SUN':
+    class_input_shape = (102, )
+    learned_input_shape = (128, )
+    class_output_dim = 102
+    learned_output_dim = 128
+elif dataset == 'CUB':
+    class_input_shape = (312, )
+    learned_input_shape = (128, )
+    class_output_dim = 312
+    learned_output_dim = 128
+
+
+
+#y_enc = load_model('model/' + dataset + '/y_encoder_scale.h5', custom_objects={'Scaler': Scaler})
+mean_enc = load_model('model/' + dataset + '/mean_encoder_scale.h5', custom_objects={'Scaler': Scaler})
+#var_enc = load_model('model/' + dataset + '/var_encoder_scale.h5', custom_objects={'Scaler': Scaler})
+
+data = np.load('data/'+ dataset +'/traindata.npy')
+attr = np.load('data/'+ dataset +'/trainattr.npy')
+
+data_train, data_test, attr_train, attr_test = train_test_split(data, attr, test_size=0.20, random_state=42)
+
+mean_train = mean_enc.predict([data_train], batch_size=200)
+mean_test = mean_enc.predict([data_test], batch_size=200)
+
+latent_dim = 256
+intermediate_dim = 256
 epochs = 1000
 
 
-path = 'data/plant/'
+
 
 ###################input_1#########################
-class_embedding_input = Input(shape=input_shape)
+class_embedding_input = Input(shape=class_input_shape)
 x = class_embedding_input
 x = Dense(intermediate_dim, activation='relu')(x)
 x = BatchNormalization()(x)
@@ -127,8 +150,8 @@ z_mean = Dense(latent_dim, activation='relu')(x)
 z_std = Dense(latent_dim, activation='relu')(x)
 
 scaler = Scaler()
-z_mean = scaler(z_mean, mode='positive', name='Scaler')
-z_std = scaler(z_std, mode='negative', name='Scaler')
+z_class_mean = scaler(z_mean, mode='positive')
+z_class_std = scaler(z_std, mode='negative')
 
 def sampling(args):
     z_mean, z_log_var = args
@@ -136,10 +159,10 @@ def sampling(args):
     return z_mean + K.exp(z_log_var / 2) * epsilon
 
 # 重参数层，相当于给输入加入噪声
-z_class = Lambda(sampling, output_shape=(latent_dim,))([z_mean, z_std])
+z_class = Lambda(sampling, output_shape=(latent_dim,))([z_class_mean, z_class_std])
 
 ###################input_2########################
-learned_embedding_input = Input(shape=input_shape)
+learned_embedding_input = Input(shape=learned_input_shape)
 x = learned_embedding_input
 x = Dense(intermediate_dim, activation='relu')(x)
 x = BatchNormalization()(x)
@@ -151,8 +174,8 @@ z_mean = Dense(latent_dim, activation='relu')(x)
 z_std = Dense(latent_dim, activation='relu')(x)
 
 scaler = Scaler()
-z_mean = scaler(z_mean, mode='positive', name='Scaler')
-z_std = scaler(z_std, mode='negative', name='Scaler')
+z_learned_mean = scaler(z_mean, mode='positive')
+z_learned_std = scaler(z_std, mode='negative')
 
 def sampling(args):
     z_mean, z_log_var = args
@@ -160,7 +183,7 @@ def sampling(args):
     return z_mean + K.exp(z_log_var / 2) * epsilon
 
 # 重参数层，相当于给输入加入噪声
-z_learned = Lambda(sampling, output_shape=(latent_dim,))([z_mean, z_std])
+z_learned = Lambda(sampling, output_shape=(latent_dim,))([z_learned_mean, z_learned_std])
 
 # 解码层，也就是生成器部分
 # 先搭建为一个独立的模型，然后再调用模型
@@ -189,25 +212,33 @@ learned_output = Dense(learned_output_dim, activation='relu')(x)
 class_decoder = Model(class_latent_inputs, class_output)
 learned_decoder = Model(learned_latent_inputs, learned_output)
 
-class_out = class_decoder(z)
-learned_out = learned_decoder(z)
+class_out = class_decoder(z_class)
+learned_out = learned_decoder(z_learned)
 
 # 建立模型
 vae = Model(inputs=[class_embedding_input, learned_embedding_input], outputs=[class_out, learned_out])
 
 
 
-x_in_flat = Flatten()(x_in)
-x_out_flat = Flatten()(x_out)
 # xent_loss是重构loss，kl_loss是KL loss
-xent_loss = 0.5 * K.sum(K.binary_crossentropy(x_in_flat, x_out_flat), axis=-1)#K.mean((x_in_flat - x_out_flat)**2)
+xent_loss = 0.5 * K.mean((class_embedding_input - class_out)**2) + \
+            0.5 * K.mean((learned_embedding_input - learned_out)**2)
+#K.sum(K.categorical_crossentropy(x_in_flat, x_out_flat), axis=-1)
 
-# 只需要修改K.square(z_mean)为K.square(z_mean - yh)，也就是让隐变量向类内均值看齐
-kl_loss = - 0.5 * K.sum(1 + z_plus_log_var - K.square(z_plus_mean - yh) - K.exp(z_plus_log_var), axis=-1)
+cross_class_out = class_decoder(z_learned)
+cross_learned_out = learned_decoder(z_class)
+cross_xent_loss = 0.5 * K.mean((class_embedding_input - cross_class_out)**2) + \
+                  0.5 * K.mean((learned_embedding_input - cross_learned_out)**2)
 
-#cos相似度的loss,保證類別向量散度
-cos_loss = cos_similarity#* 2e-5
-vae_loss = K.mean(xent_loss + kl_loss + cos_loss)
+kl_loss = - 0.5 * K.sum(1 + z_class_std - K.square(z_class_mean) - K.exp(z_class_std), axis=-1) + \
+          - 0.5 * K.sum(1 + z_learned_std - K.square(z_learned_mean) - K.exp(z_learned_std), axis=-1)
+
+align_loss = K.sum(K.square((z_class - z_learned)**2 + \
+                            (K.square(K.exp(z_class_std)) - K.square(K.exp(z_learned_std)))**2), axis=-1)
+
+
+
+vae_loss = K.mean(xent_loss + cross_xent_loss + kl_loss + align_loss)
 
 # add_loss是新增的方法，用于更灵活地添加各种loss
 vae.add_loss(vae_loss)
@@ -215,7 +246,7 @@ vae.compile(optimizer='adam')
 vae.summary()
 
 history = LossHistory()
-early_stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=0)
+early_stopping = EarlyStopping(monitor='val_loss', patience=20, verbose=0)
 
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_loss', 
                                             patience=10, 
@@ -225,25 +256,26 @@ learning_rate_reduction = ReduceLROnPlateau(monitor='val_loss',
 
 
 
-vae.fit([x_train, y_train, y_class_train],
+vae.fit([attr_train, mean_train],
         shuffle=True,
         epochs=epochs,
         batch_size=batch_size,
-        validation_data=([x_test, y_test, y_class_test], None),
+        validation_data=([attr_test, mean_test], None),
         #validation_split=(0.2),
-        callbacks=[history, learning_rate_reduction, early_stopping])
+        callbacks=[history, learning_rate_reduction, early_stopping])#
 
 
 
 history.loss_plot('epoch')
 
-mean_encoder = Model(x_in, z_plus_mean)
-mean_encoder.save('model/plant/mean_encoder.h5')
+attr_encoder = Model(class_embedding_input, z_class)
+attr_encoder.save('model/' + dataset + '/attr_encoder.h5')
 
-var_encoder = Model(x_in, z_plus_log_var)
-var_encoder.save('model/plant/var_encoder.h5')
+learned_encoder = Model(learned_embedding_input, z_learned)
+learned_encoder.save('model/' + dataset + '/learned_encoder.h5')
 
-decoder.save('model/plant/generator.h5')
+class_decoder.save('model/' + dataset + '/attr_decoder.h5')
+learned_decoder.save('model/' + dataset + '/learned_decoder.h5')
 
-mu = Model(y, yh)
-mu.save('model/plant/y_encoder.h5')
+
+
