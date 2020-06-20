@@ -93,6 +93,44 @@ class Scaler(keras.layers.Layer):
         base_config = super(Scaler, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
+class Sampling(keras.layers.Layer):
+    def __init__(self, latent_dim=128, **kwargs):
+        super(Sampling, self).__init__(**kwargs)
+        self.latent_dim = latent_dim
+
+    def build(self, input_shape):
+        super(Sampling, self).build(input_shape)
+
+    def call(self, inputs):
+        z_mean, z_log_var = inputs
+        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], self.latent_dim))
+
+        return z_mean + K.exp(z_log_var / 2) * epsilon
+
+    def get_config(self):
+        base_config = super(Sampling, self).get_config()
+        config = {'latent_dim': self.latent_dim}
+        return dict(list(base_config.items()) + list(config.items()))
+
+class Parm_layer(keras.layers.Layer):
+    def __init__(self, ratio=0.5, **kwargs):
+        super(Parm_layer, self).__init__(**kwargs)
+        self.ratio = ratio
+
+    def build(self, input_shape):
+        super(Parm_layer, self).build(input_shape)
+
+    def call(self, inputs):
+        m1, m2 = inputs
+
+        return self.ratio * m1 + (1 - self.ratio) *m2
+        
+    def get_config(self):
+        base_config = super(Parm_layer, self).get_config()
+        config = {'ratio': self.ratio}
+        return dict(list(base_config.items()) + list(config.items()))
+
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 batch_size = 128
 class_input_shape = -1
@@ -115,24 +153,27 @@ elif dataset == 'CUB':
     learned_input_shape = (128, )
     class_output_dim = 312
     learned_output_dim = 128
+elif dataset == 'AwA2':
+    class_input_shape = (85, )
+    learned_input_shape = (128, )
+    class_output_dim = 85
+    learned_output_dim = 224
 
 
 
-#y_enc = load_model('model/' + dataset + '/y_encoder_scale.h5', custom_objects={'Scaler': Scaler})
-mean_enc = load_model('model/' + dataset + '/mean_encoder_scale.h5', custom_objects={'Scaler': Scaler})
-#var_enc = load_model('model/' + dataset + '/var_encoder_scale.h5', custom_objects={'Scaler': Scaler})
+enc = load_model('model/' + dataset + '/encoder.h5', custom_objects={'Scaler': Scaler, 'Sampling': Sampling, 'Parm_layer': Parm_layer})
 
 data = np.load('data/'+ dataset +'/traindata.npy')
 attr = np.load('data/'+ dataset +'/trainattr.npy')
 
 data_train, data_test, attr_train, attr_test = train_test_split(data, attr, test_size=0.20, random_state=42)
 
-mean_train = mean_enc.predict([data_train], batch_size=200)
-mean_test = mean_enc.predict([data_test], batch_size=200)
+mean_train = enc.predict([data_train], batch_size=200)
+mean_test = enc.predict([data_test], batch_size=200)
 
-latent_dim = 256
-intermediate_dim = 256
-epochs = 1000
+latent_dim = 128
+intermediate_dim = 128
+epochs = 10
 
 
 
@@ -153,6 +194,7 @@ scaler = Scaler()
 z_class_mean = scaler(z_mean, mode='positive')
 z_class_std = scaler(z_std, mode='negative')
 
+'''
 def sampling(args):
     z_mean, z_log_var = args
     epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim))
@@ -160,6 +202,10 @@ def sampling(args):
 
 # 重参数层，相当于给输入加入噪声
 z_class = Lambda(sampling, output_shape=(latent_dim,))([z_class_mean, z_class_std])
+'''
+sampling = Sampling()
+z_class = sampling([z_class_mean, z_class_std])
+
 
 ###################input_2########################
 learned_embedding_input = Input(shape=learned_input_shape)
@@ -177,6 +223,7 @@ scaler = Scaler()
 z_learned_mean = scaler(z_mean, mode='positive')
 z_learned_std = scaler(z_std, mode='negative')
 
+'''
 def sampling(args):
     z_mean, z_log_var = args
     epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim))
@@ -184,6 +231,9 @@ def sampling(args):
 
 # 重参数层，相当于给输入加入噪声
 z_learned = Lambda(sampling, output_shape=(latent_dim,))([z_learned_mean, z_learned_std])
+'''
+sampling = Sampling(latent_dim)
+z_learned = sampling([z_learned_mean, z_learned_std])
 
 # 解码层，也就是生成器部分
 # 先搭建为一个独立的模型，然后再调用模型

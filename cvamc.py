@@ -92,28 +92,67 @@ class Scaler(keras.layers.Layer):
         base_config = super(Scaler, self).get_config()
         return dict(list(base_config.items()) + list(config.items()))
 
+class Sampling(keras.layers.Layer):
+    def __init__(self, latent_dim=128, **kwargs):
+        super(Sampling, self).__init__(**kwargs)
+        self.latent_dim = latent_dim
+
+    def build(self, input_shape):
+        super(Sampling, self).build(input_shape)
+
+    def call(self, inputs):
+        z_mean, z_log_var = inputs
+        epsilon = K.random_normal(shape=(K.shape(z_mean)[0], self.latent_dim))
+
+        return z_mean + K.exp(z_log_var / 2) * epsilon
+
+    def get_config(self):
+        base_config = super(Sampling, self).get_config()
+        config = {'latent_dim': self.latent_dim}
+        return dict(list(base_config.items()) + list(config.items()))
+
+class Parm_layer(keras.layers.Layer):
+    def __init__(self, ratio=0.5, **kwargs):
+        super(Parm_layer, self).__init__(**kwargs)
+        self.ratio = ratio
+
+    def build(self, input_shape):
+        super(Parm_layer, self).build(input_shape)
+
+    def call(self, inputs):
+        m1, m2 = inputs
+
+        return self.ratio * m1 + (1 - self.ratio) *m2
+        
+    def get_config(self):
+        base_config = super(Parm_layer, self).get_config()
+        config = {'ratio': self.ratio}
+        return dict(list(base_config.items()) + list(config.items()))
+
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 batch_size = 64
-input_shape = (224, 224, 3)
+input_shape = -1
 kernel_size = 3
-filters = 16
-latent_dim = 128
-intermediate_dim = 64
+filters = 32
+latent_dim = 256
+intermediate_dim = 128
 epochs = 1000
 num_classes = -1
 
 argv = sys.argv
 dataset = argv[1]
 if dataset == 'SUN':
-    num_classes = 724
+    num_classes = 725
     input_shape = (128, 128, 3)
 elif dataset == 'cifar10':
     num_classes = 10
     input_shape = (28, 28, 3)
 elif dataset == 'plant':
     num_classes = 38
+    input_shape = (224, 224, 3)
 elif dataset == 'AwA2':
     num_classes = 50
+    input_shape = (128, 128, 3)
 elif dataset == 'CUB':
     num_classes = 200
     input_shape = (128, 128, 3)
@@ -197,26 +236,22 @@ mc1_z_log_var = scaler(mc1_z_log_var, mode='negative')
 z_mean = scaler(z_mean, mode='positive')
 z_log_var = scaler(z_log_var, mode='negative')
 
-
-#mc1_z_mean = Dropout(0.2)(mc1_z_mean)
-#mc1_z_log_var = Dropout(0.2)(mc1_z_log_var)
-#z_mean = Dropout(0.2)(z_mean)
-#z_log_var = Dropout(0.2)(z_log_var)
-
+'''
 def parm_layer(args):
     m1, m2 = args
     return (m1 + m2) / 2
 
-z_plus_mean = Lambda(parm_layer, output_shape=(latent_dim,))([z_mean, mc1_z_mean])
-z_plus_log_var = Lambda(parm_layer, output_shape=(latent_dim,))([z_log_var, mc1_z_log_var])
+z_plus_mean = Lambda(parm_layer, output_shape=(latent_dim,))()
+z_plus_log_var = Lambda(parm_layer, output_shape=(latent_dim,))()
+'''
 
-def sampling(args):
-    z_mean, z_log_var = args
-    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim))
-    return z_mean + K.exp(z_log_var / 2) * epsilon
+save_ratio = 0.2 ## save ratio for origin image
+parm_layer = Parm_layer(save_ratio)
+z_plus_mean = parm_layer([z_mean, mc1_z_mean])
+z_plus_log_var = parm_layer([z_log_var, mc1_z_log_var])
 
-# 重参数层，相当于给输入加入噪声
-z = Lambda(sampling, output_shape=(latent_dim,))([z_plus_mean, z_plus_log_var])
+sampling = Sampling(latent_dim)
+z = sampling([z_plus_mean, z_plus_log_var])
 
 # 解码层，也就是生成器部分
 # 先搭建为一个独立的模型，然后再调用模型
@@ -273,7 +308,7 @@ vae.compile(optimizer='adam')
 vae.summary()
 
 history = LossHistory()
-early_stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=0)
+early_stopping = EarlyStopping(monitor='val_loss', patience=20, verbose=0)
 
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_loss', 
                                             patience=10, 
@@ -295,13 +330,10 @@ vae.fit([x_train, y_train],
 
 history.loss_plot('epoch')
 
-mean_encoder = Model(x_in, z_plus_mean)
-mean_encoder.save('model/' + dataset +'/mean_encoder_scale.h5')
+encoder = Model(x_in, z)
+encoder.save('model/' + dataset +'/encoder.h5')
 
-var_encoder = Model(x_in, z_plus_log_var)
-var_encoder.save('model/' + dataset + '/var_encoder_scale.h5')
-
-decoder.save('model/' + dataset + '/generator_scale.h5')
+decoder.save('model/' + dataset + '/decoder.h5')
 
 mu = Model(y_in, yh)
-mu.save('model/' + dataset + '/y_encoder_scale.h5')
+mu.save('model/' + dataset + '/y_encoder.h5')

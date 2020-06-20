@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 from PIL import Image
 
-image_size = 224          # 指定图片大小
+image_size = 128          # 指定图片大小
 path = '/home/uscc/Downloads/Animals_with_Attributes2/'   #文件读取路径
 
 classname = pd.read_csv(path+'classes.txt',header=None,sep = '\t')
@@ -48,29 +48,35 @@ def load_data(data, num):
     
     data_list = []
     label_list = []
-   
+    attr_list = []
+
+    attr = pd.read_csv(path+'predicate-matrix-continuous.txt',header=None,sep = '\t')
+    attr = [list(filter(('').__ne__, attr.loc[i][0].split(' '))) for i in range(attr.shape[0])] #50*85
     
     for item in data.iloc[:,0].values.tolist():
         tup = load_Img(path+'JPEGImages/'+item,read_num=read_num)
         data_list.append(tup[0])
         label_list += [dic_name2class[item]]*tup[1]
-        
+        attr_list += [attr[dic_name2class[item]]]*tup[1]
           
     
-    return np.row_stack(data_list),np.array(label_list)
+    return np.row_stack(data_list),np.array(label_list), np.array(attr_list)
+
 
 train_classes = pd.read_csv(path+'trainclasses.txt',header=None)
 test_classes = pd.read_csv(path+'testclasses.txt',header=None)
 
-traindata,trainlabel = load_data(train_classes, num='max')
+traindata ,trainlabel, trainattr = load_data(train_classes, num='max')
 np.save(path+'traindata.npy',traindata)
 np.save(path+'trainlabel.npy',trainlabel)
+np.save(path+'trainattr.npy',trainattr)
 
-print(traindata.shape,trainlabel.shape)
+print(traindata.shape,trainlabel.shape, trainattr.shape)
 
-testdata,testlabel = load_data(test_classes, num='max')
+testdata,testlabel, testattr = load_data(test_classes, num='max')
 np.save(path+'testdata.npy',testdata)
 np.save(path+'testlabel.npy',testlabel)
+np.save(path+'testattr.npy',testattr)
 
-print(testdata.shape,testlabel.shape)
+print(testdata.shape,testlabel.shape, testattr.shape)
 

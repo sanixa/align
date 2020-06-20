@@ -61,8 +61,7 @@ def load_data():
         label = f.readlines()
     with open(path+'images.txt', 'r') as f:
         images = f.readlines()
-    with open(path+'train_test_split.txt', 'r') as f:
-        split = f.readlines()
+
     
     for i in range(len(images)):#
         img_path = images[i].split()[1]
@@ -70,11 +69,11 @@ def load_data():
 
         tup = load_Img(path+ 'images/'+img_path)
         
-        if split[i].split()[1] == str(1): ##train set
+        if int(img_label) <= 160: ##train set
             train_data_list.append(tup)
             train_label_list += [img_label]
             train_attr_list += [attr[int(img_label)].split(' ')]
-        elif split[i].split()[1] == str(0): ##test set
+        elif int(img_label) > 160: ##test set
             test_data_list.append(tup)
             test_label_list += [img_label]
             test_attr_list += [attr[int(img_label)].split(' ')]
