@@ -130,7 +130,7 @@ class Parm_layer(keras.layers.Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-batch_size = 64
+batch_size = 256
 input_shape = -1
 kernel_size = 3
 filters = 32
@@ -142,7 +142,7 @@ num_classes = -1
 argv = sys.argv
 dataset = argv[1]
 if dataset == 'SUN':
-    num_classes = 725
+    num_classes = 717
     input_shape = (128, 128, 3)
 elif dataset == 'cifar10':
     num_classes = 10
@@ -164,7 +164,7 @@ seen_y = np.load('data/'+ dataset +'/trainlabel.npy')
 if dataset == 'plant':
     seen_x = seen_x / 255.
 
-x_train, x_test, y_train, y_test = train_test_split(seen_x, seen_y, test_size=0.20, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(seen_x, seen_y, test_size=0.20, random_state=412)
 
 np.save('data/'+ dataset +'/x_train.npy', x_train)
 np.save('data/'+ dataset +'/x_test.npy', x_test)

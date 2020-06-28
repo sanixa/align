@@ -61,7 +61,7 @@ def load_data(data, num, mode):
         data_list.append(tup[0])
         label_list += [dic_name2class[item]]*tup[1]
         attr_list += [attr[dic_name2class[item]]]*tup[1]
-          
+        
     
     return np.row_stack(data_list),np.array(label_list),np.array(attr_list)
 

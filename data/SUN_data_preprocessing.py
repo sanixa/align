@@ -137,16 +137,16 @@ def load_Img(imgDir,read_num = 'max'):
             temp[:,:,0] = arr
             temp[:,:,1] = arr
             temp[:,:,2] = arr
-            arr = temp 
+            arr = temp
         if arr.shape == (image_size,image_size,4):
             temp = np.empty((image_size,image_size,3),dtype="float16")
             temp[:,:,0] = arr[:,:,0]
             temp[:,:,1] = arr[:,:,1]
             temp[:,:,2] = arr[:,:,2]
-            arr = temp       
-            data[i,:,:,:] = arr
+            arr = temp
         if arr.shape != (image_size,image_size,3):
             print('error', imgDir)
+        data[i,:,:,:] = arr
     return data,imgNum 
 
 def load_data(data, num):
@@ -158,6 +158,9 @@ def load_data(data, num):
 
     matcontent = scipy.io.loadmat('SUN/att_splits.mat')
     attr = matcontent['att'].T
+    for i in range(len(attr)):
+        for j in range(len(attr[0])):
+            attr[i,j] = str(attr[i,j])
     
     for item in data:#.iloc[:,0].values.tolist()
         item = item[:-1] ##remove '\n'
@@ -165,7 +168,6 @@ def load_data(data, num):
         data_list.append(tup[0])
         label_list += [dic_name2class[item]]*tup[1]
         attr_list += [attr[dic_name2class[item]]]*tup[1]
-          
     
     return np.row_stack(data_list),np.array(label_list), np.array(attr_list)
 
@@ -177,14 +179,14 @@ with open(path+'testclasses.txt', 'r') as f:
     testclasses = f.readlines()
     
 
-traindata, trainlabel, trainattr = load_data(trainclasses, 'max')
+traindata, trainlabel, trainattr = load_data(trainclasses, num='max')
 np.save(path+'traindata.npy',traindata)
 np.save(path+'trainlabel.npy',trainlabel)
 np.save(path+'trainattr.npy',trainattr)
 
 print(traindata.shape,trainlabel.shape, trainattr.shape)
 
-testdata, testlabel, testattr = load_data(testclasses, 'max')
+testdata, testlabel, testattr = load_data(testclasses, num='max')
 np.save(path+'testdata.npy',testdata)
 np.save(path+'testlabel.npy',testlabel)
 np.save(path+'testattr.npy',testattr)

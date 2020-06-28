@@ -50,15 +50,15 @@ def load_data(data, num):
     label_list = []
     attr_list = []
 
-    matcontent = scipy.io.loadmat('CUB/att_splits.mat')
-    attr = matcontent['att'].T
+    attr = pd.read_csv(path+'predicate-matrix-continuous.txt',header=None,sep = '\t')
+    attr = [list(filter(('').__ne__, attr.loc[i][0].split(' '))) for i in range(attr.shape[0])] #50*85
     
     for item in data.iloc[:,0].values.tolist():
         tup = load_Img(path+'JPEGImages/'+item,read_num=read_num)
         data_list.append(tup[0])
         label_list += [dic_name2class[item]]*tup[1]
         attr_list += [attr[dic_name2class[item]]]*tup[1]
-          
+        
     
     return np.row_stack(data_list),np.array(label_list), np.array(attr_list)
 
