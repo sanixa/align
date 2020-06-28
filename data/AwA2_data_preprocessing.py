@@ -50,8 +50,8 @@ def load_data(data, num):
     label_list = []
     attr_list = []
 
-    attr = pd.read_csv(path+'predicate-matrix-continuous.txt',header=None,sep = '\t')
-    attr = [list(filter(('').__ne__, attr.loc[i][0].split(' '))) for i in range(attr.shape[0])] #50*85
+    matcontent = scipy.io.loadmat('CUB/att_splits.mat')
+    attr = matcontent['att'].T
     
     for item in data.iloc[:,0].values.tolist():
         tup = load_Img(path+'JPEGImages/'+item,read_num=read_num)

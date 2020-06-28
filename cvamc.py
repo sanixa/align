@@ -129,7 +129,7 @@ class Parm_layer(keras.layers.Layer):
         config = {'ratio': self.ratio}
         return dict(list(base_config.items()) + list(config.items()))
 
-os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
+#os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 batch_size = 64
 input_shape = -1
 kernel_size = 3
@@ -149,7 +149,7 @@ elif dataset == 'cifar10':
     input_shape = (28, 28, 3)
 elif dataset == 'plant':
     num_classes = 38
-    input_shape = (224, 224, 3)
+    input_shape = (128, 128, 3)
 elif dataset == 'AwA2':
     num_classes = 50
     input_shape = (128, 128, 3)
@@ -161,11 +161,9 @@ elif dataset == 'CUB':
 seen_x = np.load('data/'+ dataset +'/traindata.npy')
 seen_y = np.load('data/'+ dataset +'/trainlabel.npy')
 
-'''
-classname = pd.read_csv('data/'+ dataset +'/classes.txt',header=None,sep = '\t')
-dic_class2name = {classname.index[i]:classname.loc[i][1] for i in range(classname.shape[0])}    
-dic_name2class = {classname.loc[i][1]:classname.index[i] for i in range(classname.shape[0])}
-'''
+if dataset == 'plant':
+    seen_x = seen_x / 255.
+
 x_train, x_test, y_train, y_test = train_test_split(seen_x, seen_y, test_size=0.20, random_state=42)
 
 np.save('data/'+ dataset +'/x_train.npy', x_train)
@@ -236,14 +234,6 @@ mc1_z_log_var = scaler(mc1_z_log_var, mode='negative')
 z_mean = scaler(z_mean, mode='positive')
 z_log_var = scaler(z_log_var, mode='negative')
 
-'''
-def parm_layer(args):
-    m1, m2 = args
-    return (m1 + m2) / 2
-
-z_plus_mean = Lambda(parm_layer, output_shape=(latent_dim,))()
-z_plus_log_var = Lambda(parm_layer, output_shape=(latent_dim,))()
-'''
 
 save_ratio = 0.2 ## save ratio for origin image
 parm_layer = Parm_layer(save_ratio)
@@ -337,3 +327,4 @@ decoder.save('model/' + dataset + '/decoder.h5')
 
 mu = Model(y_in, yh)
 mu.save('model/' + dataset + '/y_encoder.h5')
+

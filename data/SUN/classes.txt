@@ -1,725 +1,717 @@
-0,a/abbey
-1,a/access_road
-2,a/airfield
-3,a/airlock
-4,a/airplane_cabin
-5,a/airport
-6,a/airport_terminal
-7,a/airport_ticket_counter
-8,a/alcove
-9,a/alley
-10,a/amphitheater
-11,a/amusement_arcade
-12,a/amusement_park
-13,a/anechoic_chamber
-14,a/apartment_building
-15,a/apse
-16,a/aquarium
-17,a/aquatic_theater
-18,a/aqueduct
-19,a/arch
-20,a/archaelogical_excavation
-21,a/archive
-22,a/arena
-23,a/armory
-24,a/arrival_gate
-25,a/artists_loft
-26,a/art_gallery
-27,a/art_school
-28,a/art_studio
-29,a/assembly_line
-30,a/athletic_field
-31,a/atrium
-32,a/attic
-33,a/auditorium
-34,a/auto_factory
-35,a/auto_mechanics
-36,a/auto_racing_paddock
-37,a/auto_showroom
-38,b/backstage
-39,b/badlands
-40,b/badminton_court
-41,b/baggage_claim
-42,b/bakery
-43,b/balcony
-44,b/ballroom
-45,b/ball_pit
-46,b/bamboo_forest
-47,b/bank
-48,b/bank_vault
-49,b/banquet_hall
-50,b/baptistry
-51,b/bar
-52,b/barbershop
-53,b/barn
-54,b/barndoor
-55,b/baseball_field
-56,b/basement
-57,b/basilica
-58,b/basketball_court
-59,b/bathroom
-60,b/batters_box
-61,b/batting_cage
-62,b/bayou
-63,b/bazaar
-64,b/beach
-65,b/beach_house
-66,b/beauty_salon
-67,b/bedchamber
-68,b/bedroom
-69,b/beer_garden
-70,b/beer_hall
-71,b/bell_foundry
-72,b/berth
-73,b/betting_shop
-74,b/bicycle_racks
-75,b/bindery
-76,b/biology_laboratory
-77,b/bistro
-78,b/bleachers
-79,b/boardwalk
-80,b/boathouse
-81,b/boat_deck
-82,b/bog
-83,b/bookstore
-84,b/booth
-85,b/botanical_garden
-86,b/bowling_alley
-87,b/bow_window
-88,b/boxing_ring
-89,b/brewery
-90,b/brickyard
-91,b/bridge
-92,b/building_complex
-93,b/building_facade
-94,b/bullpen
-95,b/bullring
-96,b/burial_chamber
-97,b/bus_depot
-98,b/bus_interior
-99,b/bus_shelter
-100,b/bus_station
-101,b/butchers_shop
-102,b/butte
-103,c/cabana
-104,c/cabin
-105,c/cafeteria
-106,c/call_center
-107,c/campsite
-108,c/campus
-109,c/canal
-110,c/candy_store
-111,c/canteen
-112,c/canyon
-113,c/caravansary
-114,c/cardroom
-115,c/cargo_deck
-116,c/carport
-117,c/carrousel
-118,c/car_interior
-119,c/casino
-120,c/castle
-121,c/catacomb
-122,c/cathedral
-123,c/catwalk
-124,c/cavern
-125,c/cemetery
-126,c/chalet
-127,c/chaparral
-128,c/chapel
-129,c/checkout_counter
-130,c/cheese_factory
-131,c/chemical_plant
-132,c/chemistry_lab
-133,c/chicken_coop
-134,c/chicken_farm
-135,c/childs_room
-136,c/church
-137,c/circus_tent
-138,c/city
-139,c/classroom
-140,c/clean_room
-141,c/cliff
-142,c/cloister
-143,c/closet
-144,c/clothing_store
-145,c/coast
-146,c/cockpit
-147,c/coffee_shop
-148,c/computer_room
-149,c/conference_center
-150,c/conference_hall
-151,c/conference_room
-152,c/confessional
-153,c/construction_site
-154,c/control_room
-155,c/control_tower
-156,c/convenience_store
-157,c/corn_field
-158,c/corral
-159,c/corridor
-160,c/cottage
-161,c/cottage_garden
-162,c/courthouse
-163,c/courtroom
-164,c/courtyard
-165,c/covered_bridge
-166,c/crawl_space
-167,c/creek
-168,c/crevasse
-169,c/crosswalk
-170,c/cubicle
-171,c/cybercafe
-172,d/dacha
-173,d/dairy
-174,d/dam
-175,d/darkroom
-176,d/day_care_center
-177,d/delicatessen
-178,d/dentists_office
-179,d/departure_lounge
-180,d/desert
-181,d/desert_road
-182,d/diner
-183,d/dinette
-184,d/dining_car
-185,d/dining_hall
-186,d/dining_room
-187,d/dirt_track
-188,d/discotheque
-189,d/distillery
-190,d/dock
-191,d/dolmen
-192,d/donjon
-193,d/doorway
-194,d/dorm_room
-195,d/downtown
-196,d/drainage_ditch
-197,d/drill_rig
-198,d/driveway
-199,d/driving_range
-200,d/drugstore
-201,d/dry_dock
-202,d/dugout
-203,e/earth_fissure
-204,e/editing_room
-205,e/electrical_substation
-206,e/elevator
-207,e/elevator_lobby
-208,e/elevator_shaft
-209,e/embassy
-210,e/engine_room
-211,e/escalator
-212,e/estuary
-213,e/excavation
-214,e/exhibition_hall
-215,f/factory
-216,f/fairway
-217,f/farm
-218,f/fastfood_restaurant
-219,f/fence
-220,f/ferryboat
-221,f/field
-222,f/field_road
-223,f/fire_escape
-224,f/fire_station
-225,f/firing_range
-226,f/fishpond
-227,f/fish_farm
-228,f/fjord
-229,f/flea_market
-230,f/flight_of_stairs
-231,f/flood
-232,f/florist_shop
-233,f/fly_bridge
-234,f/food_court
-235,f/football_field
-236,f/forest
-237,f/forest_path
-238,f/forest_road
-239,f/formal_garden
-240,f/fort
-241,f/fortress
-242,f/foundry
-243,f/fountain
-244,f/freeway
-245,f/funeral_chapel
-246,f/furnace_room
-247,g/galley
-248,g/game_room
-249,g/gangplank
-250,g/garage
-251,g/garbage_dump
-252,g/gasworks
-253,g/gas_station
-254,g/gatehouse
-255,g/gazebo
-256,g/general_store
-257,g/geodesic_dome
-258,g/ghost_town
-259,g/gift_shop
-260,g/glacier
-261,g/golf_course
-262,g/gorge
-263,g/great_hall
-264,g/greenhouse
-265,g/grotto
-266,g/guardhouse
-267,g/gulch
-268,g/gun_deck
-269,g/gymnasium
-270,h/hacienda
-271,h/hallway
-272,h/hangar
-273,h/harbor
-274,h/hayfield
-275,h/heath
-276,h/hedgerow
-277,h/hedge_maze
-278,h/heliport
-279,h/herb_garden
-280,h/highway
-281,h/hill
-282,h/home_office
-283,h/home_theater
-284,h/hoodoo
-285,h/hospital
-286,h/hospital_room
-287,h/hotel
-288,h/hotel_breakfast_area
-289,h/hotel_room
-290,h/hot_spring
-291,h/hot_tub
-292,h/house
-293,h/hunting_lodge
-294,h/hut
-295,i/iceberg
-296,i/ice_cream_parlor
-297,i/ice_floe
-298,i/ice_shelf
-299,i/ice_skating_rink
-300,i/igloo
-301,i/industrial_area
-302,i/industrial_park
-303,i/inn
-304,i/irrigation_ditch
-305,i/islet
-306,j/jacuzzi
-307,j/jail
-308,j/jail_cell
-309,j/japanese_garden
-310,j/jewelry_shop
-311,j/joss_house
-312,j/junkyard
-313,j/junk_pile
-314,j/jury_box
-315,k/kasbah
-316,k/kennel
-317,k/kindergarden_classroom
-318,k/kiosk
-319,k/kitchen
-320,k/kitchenette
-321,l/labyrinth
-322,l/lab_classroom
-323,l/lagoon
-324,l/lake
-325,l/landfill
-326,l/landing_deck
-327,l/laundromat
-328,l/lawn
-329,l/lean-to
-330,l/lecture_room
-331,l/levee
-332,l/library
-333,l/lido_deck
-334,l/lift_bridge
-335,l/lighthouse
-336,l/limousine_interior
-337,l/liquor_store
-338,l/living_room
-339,l/loading_dock
-340,l/lobby
-341,l/locker_room
-342,l/lock_chamber
-343,l/lookout_station
-344,m/machine_shop
-345,m/manhole
-346,m/mansion
-347,m/manufactured_home
-348,m/market
-349,m/marsh
-350,m/martial_arts_gym
-351,m/mastaba
-352,m/mausoleum
-353,m/medina
-354,m/mesa
-355,m/military_hospital
-356,m/military_hut
-357,m/mine
-358,m/mineshaft
-359,m/mini_golf_course
-360,m/mission
-361,m/moat
-362,m/mobile_home
-363,m/monastery
-364,m/moor
-365,m/morgue
-366,m/mosque
-367,m/motel
-368,m/mountain
-369,m/mountain_path
-370,m/mountain_road
-371,m/mountain_snowy
-372,m/movie_theater
-373,m/museum
-374,m/music_store
-375,m/music_studio
-376,misc/sun_aabznixxagswjxqj.jpg
-377,misc/sun_aaexhadevfknvdhl.jpg
-378,misc/sun_aaikpxuszsientma.jpg
-379,misc/sun_aaipithvqgrekafl.jpg
-380,misc/sun_aakhhwfukfxplwnw.jpg
-381,misc/sun_aakmbspqcbahglmv.jpg
-382,misc/sun_aaksigtjvvxvaspr.jpg
-383,misc/sun_aametoynwintxujg.jpg
-384,misc/sun_aamzarrembfawxno.jpg
-385,misc/sun_awfdussjpnwtfvhu.jpg
-386,misc/sun_awffnxixkintkoos.jpg
-387,misc/sun_awfvedzjwnfiulec.jpg
-388,misc/sun_awhlwuciwspvmjlg.jpg
-389,misc/sun_awnrwapoieasavbq.jpg
-390,misc/sun_awoopvkkxhmmeiwn.jpg
-391,misc/sun_awyivigrrpuqxfrb.jpg
-392,misc/sun_awytwfbhyxvrzxke.jpg
-393,misc/sun_axafmmxupqbmmdki.jpg
-394,misc/sun_axaqvvvhxwbpiymj.jpg
-395,misc/sun_axaudfoeuxyxnrnz.jpg
-396,n/natural_history_museum
-397,n/naval_base
-398,n/newsroom
-399,n/newsstand
-400,n/nightclub
-401,n/nuclear_power_plant
-402,n/nursery
-403,n/nursing_home
-404,o/oasis
-405,o/oast_house
-406,o/observatory
-407,o/ocean
-408,o/office
-409,o/office_building
-410,o/office_cubicles
-411,o/oilrig
-412,o/oil_refinery
-413,o/operating_room
-414,o/optician
-415,o/orchard
-416,o/organ_loft
-417,o/ossuary
-418,o/outcropping
-419,o/outhouse
-420,o/overpass
-421,outliers/acropolis
-422,outliers/aircraft_carrier_object
-423,outliers/arbor
-424,outliers/archipelago
-425,outliers/artists_loft
-426,outliers/assembly_hall
-427,outliers/aviary
-428,outliers/awning_deck
-429,outliers/backdrop
-430,outliers/backroom
-431,outliers/backstairs_indoor
-432,outliers/backwoods
-433,outliers/back_entrance
-434,outliers/back_porch
-435,outliers/ballet
-436,outliers/balustrade
-437,outliers/barbeque
-438,outliers/barge
-439,outliers/bathhouse_outdoor
-440,outliers/bay
-441,outliers/biosphere
-442,outliers/bookshelf
-443,outliers/bottomland
-444,outliers/breakfast_table
-445,outliers/bridle_path
-446,outliers/buffet
-447,outliers/bypass
-448,outliers/cabin_cruiser
-449,outliers/cellar
-450,outliers/chair_lift
-451,outliers/cocktail_lounge
-452,outliers/corner
-453,outliers/country_house
-454,outliers/country_road
-455,outliers/diving_board
-456,outliers/dumpster
-457,outliers/farm_building
-458,outliers/fashion_runway_NOTCLEANED
-459,outliers/feed_bunk
-460,outliers/fireplace
-461,outliers/fireplace_alltypes
-462,outliers/floating_dock
-463,outliers/flood_plain
-464,outliers/flowerbed
-465,outliers/garden
-466,outliers/guesthouse
-467,outliers/hammock
-468,outliers/heronry
-469,outliers/hillock
-470,outliers/jumbo_jet
-471,outliers/jungle
-472,outliers/laboratorywet
-473,outliers/launchpad
-474,outliers/layby
-475,outliers/lazarette
-476,outliers/meadow
-477,outliers/meeting_house
-478,outliers/megalith
-479,outliers/minaret
-480,outliers/nuclear_submarine
-481,outliers/one-way_street
-482,outliers/outbuilding
-483,outliers/paddle_steamer
-484,outliers/pallet
-485,outliers/parking_space
-486,outliers/park_bench
-487,outliers/passage
-488,outliers/piste_snow
-489,outliers/plateau
-490,outliers/powder_room
-491,outliers/preserve
-492,outliers/pueblo
-493,outliers/pumping_station
-494,outliers/rabbit_hutch
-495,outliers/reception_room
-496,outliers/rest_stop
-497,outliers/retaining_wall
-498,outliers/ridge
-499,outliers/rift_valley
-500,outliers/rock_garden
-501,outliers/salad_bar
-502,outliers/scrubland
-503,outliers/snack_bar
-504,outliers/stall
-505,outliers/sunroom
-506,outliers/tap_house
-507,outliers/tidal_river
-508,outliers/tornado
-509,outliers/vinery
-510,p/packaging_plant
-511,p/pagoda
-512,p/palace
-513,p/pantry
-514,p/parade_ground
-515,p/park
-516,p/parking_garage
-517,p/parking_lot
-518,p/parlor
-519,p/particle_accelerator
-520,p/pasture
-521,p/patio
-522,p/pavilion
-523,p/pedestrian_overpass
-524,p/pet_shop
-525,p/pharmacy
-526,p/phone_booth
-527,p/physics_laboratory
-528,p/piano_store
-529,p/picnic_area
-530,p/pier
-531,p/pig_farm
-532,p/pilothouse
-533,p/pitchers_mound
-534,p/pizzeria
-535,p/planetarium
-536,p/plantation_house
-537,p/playground
-538,p/playroom
-539,p/plaza
-540,p/podium
-541,p/police_station
-542,p/pond
-543,p/poolroom
-544,p/porch
-545,p/portico
-546,p/power_plant
-547,p/print_shop
-548,p/priory
-549,p/promenade
-550,p/promenade_deck
-551,p/pub
-552,p/pulpit
-553,p/pump_room
-554,p/putting_green
-555,q/quadrangle
-556,q/quay
-557,q/quonset_hut
-558,r/racecourse
-559,r/raceway
-560,r/raft
-561,r/railroad_track
-562,r/railway_yard
-563,r/rainforest
-564,r/ramp
-565,r/ranch
-566,r/ranch_house
-567,r/reading_room
-568,r/reception
-569,r/recreation_room
-570,r/rectory
-571,r/recycling_plant
-572,r/repair_shop
-573,r/residential_neighborhood
-574,r/resort
-575,r/restaurant
-576,r/restaurant_kitchen
-577,r/restaurant_patio
-578,r/restroom
-579,r/revolving_door
-580,r/rice_paddy
-581,r/riding_arena
-582,r/river
-583,r/road_cut
-584,r/rock_arch
-585,r/roller_skating_rink
-586,r/rolling_mill
-587,r/roof
-588,r/root_cellar
-589,r/rope_bridge
-590,r/roundabout
-591,r/rubble
-592,r/ruin
-593,r/runway
-594,s/sacristy
-595,s/salt_plain
-596,s/sandbar
-597,s/sandbox
-598,s/sand_trap
-599,s/sauna
-600,s/savanna
-601,s/sawmill
-602,s/schoolhouse
-603,s/schoolyard
-604,s/science_museum
-605,s/seawall
-606,s/sea_cliff
-607,s/server_room
-608,s/sewing_room
-609,s/shed
-610,s/shipping_room
-611,s/shipyard
-612,s/shoe_shop
-613,s/shopfront
-614,s/shopping_mall
-615,s/shower
-616,s/signal_box
-617,s/skatepark
-618,s/ski_jump
-619,s/ski_lodge
-620,s/ski_resort
-621,s/ski_slope
-622,s/sky
-623,s/skyscraper
-624,s/slum
-625,s/snowfield
-626,s/soccer_field
-627,s/spillway
-628,s/squash_court
-629,s/stable
-630,s/stadium
-631,s/stage
-632,s/staircase
-633,s/steel_mill
-634,s/stilt_house
-635,s/stone_circle
-636,s/street
-637,s/strip_mall
-638,s/strip_mine
-639,s/submarine_interior
-640,s/subway_interior
-641,s/subway_station
-642,s/sun_deck
-643,s/supermarket
-644,s/sushi_bar
-645,s/swamp
-646,s/swimming_hole
-647,s/swimming_pool
-648,s/synagogue
-649,t/tearoom
-650,t/teashop
-651,t/tea_garden
-652,t/television_studio
-653,t/temple
-654,t/tennis_court
-655,t/tent
-656,t/terrace_farm
-657,t/theater
-658,t/thriftshop
-659,t/throne_room
-660,t/ticket_booth
-661,t/ticket_window
-662,t/tollbooth
-663,t/toll_plaza
-664,t/topiary_garden
-665,t/tower
-666,t/town_house
-667,t/toyshop
-668,t/track
-669,t/trading_floor
-670,t/trailer_park
-671,t/train_depot
-672,t/train_railway
-673,t/train_station
-674,t/tree_farm
-675,t/tree_house
-676,t/trench
-677,t/trestle_bridge
-678,t/tundra
-679,t/tunnel
-680,u/underwater
-681,u/utility_room
-682,v/valley
-683,v/van_interior
-684,v/vegetable_garden
-685,v/velodrome
-686,v/ventilation_shaft
-687,v/veranda
-688,v/vestry
-689,v/veterinarians_office
-690,v/viaduct
-691,v/videostore
-692,v/village
-693,v/vineyard
-694,v/volcano
-695,v/volleyball_court
-696,v/voting_booth
-697,w/waiting_room
-698,w/warehouse
-699,w/watchtower
-700,w/waterfall
-701,w/watering_hole
-702,w/water_mill
-703,w/water_tower
-704,w/water_treatment_plant
-705,w/wave
-706,w/weighbridge
-707,w/wet_bar
-708,w/wharf
-709,w/wheat_field
-710,w/windmill
-711,w/window_seat
-712,w/wind_farm
-713,w/winery
-714,w/wine_cellar
-715,w/witness_stand
-716,w/woodland
-717,w/workroom
-718,w/workshop
-719,w/wrestling_ring
-720,y/yard
-721,y/youth_hostel
-722,z/zen_garden
-723,z/ziggurat
-724,z/zoo
+1 abbey
+2 access_road
+3 airfield
+4 airlock
+5 airplane_cabin
+6 airport_airport
+7 airport_entrance
+8 airport_terminal
+9 airport_ticket_counter
+10 alcove
+11 alley
+12 amphitheater
+13 amusement_arcade
+14 amusement_park
+15 anechoic_chamber
+16 apartment_building_outdoor
+17 apse_indoor
+18 apse_outdoor
+19 aquarium
+20 aquatic_theater
+21 aqueduct
+22 arch
+23 archaelogical_excavation
+24 archive
+25 arena_basketball
+26 arena_hockey
+27 arena_performance
+28 armory
+29 arrival_gate_outdoor
+30 art_gallery
+31 art_school
+32 art_studio
+33 artists_loft
+34 assembly_line
+35 athletic_field_outdoor
+36 atrium_home
+37 atrium_public
+38 attic
+39 auditorium
+40 auto_factory
+41 auto_mechanics_indoor
+42 auto_racing_paddock
+43 auto_showroom
+44 backstage
+45 badlands
+46 badminton_court_indoor
+47 badminton_court_outdoor
+48 baggage_claim
+49 bakery_kitchen
+50 bakery_shop
+51 balcony_exterior
+52 balcony_interior
+53 ball_pit
+54 ballroom
+55 bamboo_forest
+56 bank_indoor
+57 bank_outdoor
+58 bank_vault
+59 banquet_hall
+60 baptistry_indoor
+61 baptistry_outdoor
+62 bar
+63 barn
+64 barndoor
+65 baseball_field
+66 basement
+67 basilica
+68 basketball_court_indoor
+69 basketball_court_outdoor
+70 bathroom
+71 batters_box
+72 batting_cage_indoor
+73 batting_cage_outdoor
+74 bayou
+75 bazaar_indoor
+76 bazaar_outdoor
+77 beach
+78 beach_house
+79 beauty_salon
+80 bedchamber
+81 bedroom
+82 beer_garden
+83 beer_hall
+84 bell_foundry
+85 berth
+86 betting_shop
+87 bicycle_racks
+88 bindery
+89 biology_laboratory
+90 bistro_indoor
+91 bistro_outdoor
+92 bleachers_outdoor
+93 boardwalk
+94 boat_deck
+95 boathouse
+96 bog
+97 bookstore
+98 booth_indoor
+99 botanical_garden
+100 bow_window_indoor
+101 bow_window_outdoor
+102 bowling_alley
+103 boxing_ring
+104 brewery_indoor
+105 brewery_outdoor
+106 brickyard_outdoor
+107 bridge
+108 building_complex
+109 building_facade
+110 bullpen
+111 bullring
+112 burial_chamber
+113 bus_depot_outdoor
+114 bus_interior
+115 bus_shelter
+116 bus_station_outdoor
+117 butchers_shop
+118 butte
+119 cabana
+120 cabin_outdoor
+121 cafeteria
+122 call_center
+123 campsite
+124 campus
+125 canal_natural
+126 canal_urban
+127 candy_store
+128 canteen
+129 canyon
+130 car_interior_backseat
+131 car_interior_frontseat
+132 caravansary
+133 cardroom
+134 cargo_deck_airplane
+135 carport_freestanding
+136 carport_outdoor
+137 carrousel
+138 casino_indoor
+139 casino_outdoor
+140 castle
+141 catacomb
+142 cathedral_indoor
+143 cathedral_outdoor
+144 catwalk
+145 cavern_indoor
+146 cemetery
+147 chalet
+148 chaparral
+149 chapel
+150 checkout_counter
+151 cheese_factory
+152 chemical_plant
+153 chemistry_lab
+154 chicken_coop_indoor
+155 chicken_coop_outdoor
+156 chicken_farm_indoor
+157 chicken_farm_outdoor
+158 childs_room
+159 church_indoor
+160 church_outdoor
+161 circus_tent_indoor
+162 circus_tent_outdoor
+163 city
+164 classroom
+165 clean_room
+166 cliff
+167 cloister_indoor
+168 cloister_outdoor
+169 closet
+170 clothing_store
+171 coast
+172 cockpit
+173 coffee_shop
+174 computer_room
+175 conference_center
+176 conference_hall
+177 conference_room
+178 confessional
+179 construction_site
+180 control_room
+181 control_tower_indoor
+182 control_tower_outdoor
+183 convenience_store_indoor
+184 corn_field
+185 corral
+186 corridor
+187 cottage
+188 cottage_garden
+189 courthouse
+190 courtroom
+191 courtyard
+192 covered_bridge_exterior
+193 crawl_space
+194 creek
+195 crevasse
+196 crosswalk
+197 cubicle_office
+198 cybercafe
+199 dacha
+200 dairy_indoor
+201 dam
+202 darkroom
+203 day_care_center
+204 delicatessen
+205 dentists_office
+206 departure_lounge
+207 desert_road
+208 desert_sand
+209 desert_vegetation
+210 diner_indoor
+211 diner_outdoor
+212 dinette_home
+213 dinette_vehicle
+214 dining_car
+215 dining_hall
+216 dining_room
+217 dirt_track
+218 discotheque
+219 dock
+220 dolmen
+221 donjon
+222 doorway_indoor
+223 doorway_outdoor
+224 dorm_room
+225 downtown
+226 drainage_ditch
+227 drill_rig
+228 driveway
+229 driving_range_outdoor
+230 drugstore
+231 dry_dock
+232 dugout
+233 earth_fissure
+234 editing_room
+235 electrical_substation
+236 elevator_door
+237 elevator_freight_elevator
+238 elevator_interior
+239 elevator_lobby
+240 elevator_shaft
+241 embassy
+242 engine_room
+243 escalator_indoor
+244 escalator_outdoor
+245 estuary
+246 excavation
+247 exhibition_hall
+248 factory_indoor
+249 factory_outdoor
+250 fairway
+251 farm
+252 fastfood_restaurant
+253 fence
+254 ferryboat_outdoor
+255 field_cultivated
+256 field_road
+257 field_wild
+258 fire_escape
+259 fire_station
+260 firing_range_indoor
+261 firing_range_outdoor
+262 fish_farm
+263 fishpond
+264 fjord
+265 flea_market_indoor
+266 flea_market_outdoor
+267 flight_of_stairs_natural
+268 flight_of_stairs_urban
+269 flood
+270 florist_shop_indoor
+271 fly_bridge
+272 food_court
+273 football_field
+274 forest_broadleaf
+275 forest_needleleaf
+276 forest_path
+277 forest_road
+278 formal_garden
+279 fort
+280 fortress
+281 foundry_indoor
+282 foundry_outdoor
+283 fountain
+284 freeway
+285 funeral_chapel
+286 furnace_room
+287 galley
+288 game_room
+289 gangplank
+290 garage_indoor
+291 garage_outdoor
+292 garbage_dump
+293 gas_station
+294 gasworks
+295 gatehouse
+296 gazebo_exterior
+297 general_store_indoor
+298 general_store_outdoor
+299 geodesic_dome_indoor
+300 geodesic_dome_outdoor
+301 ghost_town
+302 gift_shop
+303 glacier
+304 golf_course
+305 gorge
+306 great_hall
+307 greenhouse_indoor
+308 greenhouse_outdoor
+309 grotto
+310 guardhouse
+311 gulch
+312 gun_deck_indoor
+313 gymnasium_indoor
+314 hacienda
+315 hallway
+316 hangar_indoor
+317 hangar_outdoor
+318 harbor
+319 hayfield
+320 heath
+321 hedge_maze
+322 hedgerow
+323 heliport
+324 herb_garden
+325 highway
+326 hill
+327 home_office
+328 home_theater
+329 hoodoo
+330 hospital
+331 hospital_room
+332 hot_spring
+333 hot_tub_indoor
+334 hot_tub_outdoor
+335 hotel_breakfast_area
+336 hotel_outdoor
+337 hotel_room
+338 house
+339 hunting_lodge_indoor
+340 hunting_lodge_outdoor
+341 hut
+342 ice_floe
+343 ice_shelf
+344 ice_skating_rink_indoor
+345 ice_skating_rink_outdoor
+346 iceberg
+347 igloo
+348 industrial_area
+349 industrial_park
+350 inn_indoor
+351 inn_outdoor
+352 irrigation_ditch
+353 islet
+354 jacuzzi_indoor
+355 jacuzzi_outdoor
+356 jail_cell
+357 jail_indoor
+358 jail_outdoor
+359 japanese_garden
+360 jewelry_shop
+361 joss_house
+362 junk_pile
+363 junkyard
+364 jury_box
+365 kasbah
+366 kennel_indoor
+367 kennel_outdoor
+368 kindergarden_classroom
+369 kiosk_indoor
+370 kiosk_outdoor
+371 kitchen
+372 kitchenette
+373 lab_classroom
+374 labyrinth_indoor
+375 labyrinth_outdoor
+376 lagoon
+377 lake_artificial
+378 lake_natural
+379 landfill
+380 landing_deck
+381 laundromat
+382 lawn
+383 lean-to
+384 lecture_room
+385 levee
+386 library_indoor
+387 library_outdoor
+388 lido_deck_outdoor
+389 lift_bridge
+390 lighthouse
+391 limousine_interior
+392 liquor_store_indoor
+393 liquor_store_outdoor
+394 living_room
+395 loading_dock
+396 lobby
+397 lock_chamber
+398 locker_room
+399 lookout_station_outdoor
+400 machine_shop
+401 manhole
+402 mansion
+403 manufactured_home
+404 market_indoor
+405 market_outdoor
+406 marsh
+407 martial_arts_gym
+408 mastaba
+409 mausoleum
+410 medina
+411 mesa
+412 military_hospital
+413 military_hut
+414 mine
+415 mineshaft
+416 mini_golf_course_outdoor
+417 mission
+418 moat_dry
+419 moat_water
+420 mobile_home
+421 monastery_outdoor
+422 moor
+423 morgue
+424 mosque_indoor
+425 mosque_outdoor
+426 motel
+427 mountain
+428 mountain_path
+429 mountain_road
+430 mountain_snowy
+431 movie_theater_indoor
+432 movie_theater_outdoor
+433 museum_indoor
+434 museum_outdoor
+435 music_store
+436 music_studio
+437 natural_history_museum
+438 naval_base
+439 newsroom
+440 newsstand_outdoor
+441 nightclub
+442 nuclear_power_plant_indoor
+443 nuclear_power_plant_outdoor
+444 nursery
+445 nursing_home
+446 oasis
+447 oast_house
+448 observatory_indoor
+449 observatory_outdoor
+450 ocean
+451 office
+452 office_building
+453 office_cubicles
+454 oil_refinery_outdoor
+455 oilrig
+456 operating_room
+457 optician
+458 orchard
+459 organ_loft_exterior
+460 ossuary
+461 outcropping
+462 outhouse_outdoor
+463 overpass
+464 packaging_plant
+465 pagoda
+466 palace
+467 pantry
+468 parade_ground
+469 park
+470 parking_garage_indoor
+471 parking_garage_outdoor
+472 parking_lot
+473 parlor
+474 particle_accelerator
+475 pasture
+476 patio
+477 pavilion
+478 pedestrian_overpass_outdoor
+479 pet_shop
+480 pharmacy
+481 phone_booth
+482 physics_laboratory
+483 piano_store
+484 picnic_area
+485 pier
+486 pig_farm
+487 pilothouse_indoor
+488 pilothouse_outdoor
+489 pitchers_mound
+490 pizzeria
+491 planetarium_indoor
+492 planetarium_outdoor
+493 plantation_house
+494 playground
+495 playroom
+496 plaza
+497 podium_indoor
+498 podium_outdoor
+499 pond
+500 poolroom_establishment
+501 poolroom_home
+502 porch
+503 portico
+504 power_plant_indoor
+505 power_plant_outdoor
+506 print_shop
+507 priory
+508 promenade
+509 promenade_deck
+510 pub_indoor
+511 pub_outdoor
+512 pulpit
+513 pump_room
+514 putting_green
+515 quadrangle
+516 quay
+517 quonset_hut_outdoor
+518 racecourse
+519 raceway
+520 raft
+521 railroad_track
+522 railway_yard
+523 rainforest
+524 ramp
+525 ranch
+526 ranch_house
+527 reading_room
+528 reception
+529 recreation_room
+530 rectory
+531 recycling_plant_indoor
+532 recycling_plant_outdoor
+533 repair_shop
+534 residential_neighborhood
+535 resort
+536 restaurant
+537 restaurant_kitchen
+538 restaurant_patio
+539 restroom_indoor
+540 restroom_outdoor
+541 revolving_door
+542 rice_paddy
+543 riding_arena
+544 river
+545 road_cut
+546 rock_arch
+547 rolling_mill
+548 roof
+549 root_cellar
+550 rope_bridge
+551 roundabout
+552 rubble
+553 ruin
+554 runway
+555 sacristy
+556 salt_plain
+557 sand_trap
+558 sandbar
+559 sandbox
+560 sauna
+561 savanna
+562 sawmill
+563 schoolhouse
+564 schoolyard
+565 science_museum
+566 sea_cliff
+567 seawall
+568 server_room
+569 sewing_room
+570 shed
+571 shipping_room
+572 shipyard_outdoor
+573 shoe_shop
+574 shopfront
+575 shopping_mall_indoor
+576 shower
+577 signal_box
+578 skatepark
+579 ski_jump
+580 ski_lodge
+581 ski_resort
+582 ski_slope
+583 sky
+584 skyscraper
+585 slum
+586 snowfield
+587 soccer_field
+588 spillway
+589 squash_court
+590 stable
+591 stadium_baseball
+592 stadium_football
+593 stadium_outdoor
+594 stadium_soccer
+595 stage_indoor
+596 stage_outdoor
+597 staircase
+598 steel_mill_indoor
+599 steel_mill_outdoor
+600 stilt_house_water
+601 stone_circle
+602 street
+603 strip_mall
+604 strip_mine
+605 submarine_interior
+606 subway_interior
+607 subway_station_corridor
+608 subway_station_platform
+609 sun_deck
+610 supermarket
+611 sushi_bar
+612 swamp
+613 swimming_hole
+614 swimming_pool_indoor
+615 swimming_pool_outdoor
+616 synagogue_indoor
+617 synagogue_outdoor
+618 tea_garden
+619 tearoom
+620 teashop
+621 television_studio
+622 temple_east_asia
+623 temple_south_asia
+624 temple_western
+625 tennis_court_indoor
+626 tennis_court_outdoor
+627 tent_indoor
+628 tent_outdoor
+629 terrace_farm
+630 theater_indoor_procenium
+631 theater_indoor_round
+632 theater_indoor_seats
+633 theater_outdoor
+634 thriftshop
+635 throne_room
+636 ticket_booth
+637 ticket_window_outdoor
+638 toll_plaza
+639 tollbooth
+640 topiary_garden
+641 tower
+642 town_house
+643 toyshop
+644 track_indoor
+645 track_outdoor
+646 trading_floor
+647 trailer_park
+648 train_depot
+649 train_railway
+650 train_station_outdoor
+651 train_station_platform
+652 train_station_station
+653 tree_farm
+654 tree_house
+655 trench
+656 trestle_bridge
+657 tundra
+658 tunnel_rail_outdoor
+659 tunnel_road_outdoor
+660 underwater_coral_reef
+661 underwater_ice
+662 underwater_kelp_forest
+663 underwater_ocean_deep
+664 underwater_ocean_shallow
+665 underwater_pool
+666 underwater_wreck
+667 utility_room
+668 valley
+669 van_interior
+670 vegetable_garden
+671 velodrome_indoor
+672 velodrome_outdoor
+673 ventilation_shaft
+674 veranda
+675 vestry
+676 veterinarians_office
+677 viaduct
+678 videostore
+679 village
+680 vineyard
+681 volcano
+682 volleyball_court_outdoor
+683 voting_booth
+684 waiting_room
+685 warehouse_indoor
+686 watchtower
+687 water_mill
+688 water_tower
+689 water_treatment_plant_indoor
+690 water_treatment_plant_outdoor
+691 waterfall_block
+692 waterfall_cascade
+693 waterfall_cataract
+694 waterfall_fan
+695 waterfall_plunge
+696 watering_hole
+697 wave
+698 weighbridge
+699 wet_bar
+700 wharf
+701 wheat_field
+702 wind_farm
+703 windmill
+704 window_seat
+705 wine_cellar_barrel_storage
+706 wine_cellar_bottle_storage
+707 winery
+708 witness_stand
+709 woodland
+710 workroom
+711 workshop
+712 wrestling_ring_indoor
+713 yard
+714 youth_hostel
+715 zen_garden
+716 ziggurat
+717 zoo

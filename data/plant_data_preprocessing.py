@@ -8,7 +8,7 @@ import numpy as np
 import cv2
 from PIL import Image
 
-image_size = 224          # 指定图片大小
+image_size = 128          # 指定图片大小
 path = '/home/uscc/New Plant Diseases Dataset(Augmented)/'   #文件读取路径
 
 classname = pd.read_csv(path+'classes.txt',header=None,sep = '\t')
@@ -48,29 +48,38 @@ def load_data(data, num, mode):
     
     data_list = []
     label_list = []
+    attr_list = []
    
-    
+    with open(path+'attr.txt', 'r') as f:
+        attr = f.readlines()
+
+    for i in range(38):
+        attr[i] = attr[i][:-1].split(' ')
+
     for item in data.iloc[:,0].values.tolist():
         tup = load_Img(path+mode+item,read_num=read_num)
         data_list.append(tup[0])
         label_list += [dic_name2class[item]]*tup[1]
-        
+        attr_list += [attr[dic_name2class[item]]]*tup[1]
           
     
-    return np.row_stack(data_list),np.array(label_list)
+    return np.row_stack(data_list),np.array(label_list),np.array(attr_list)
 
 train_classes = pd.read_csv(path+'trainclasses.txt',header=None,sep = '\t')
 test_classes = pd.read_csv(path+'testclasses.txt',header=None,sep = '\t')
 
-traindata,trainlabel = load_data(train_classes, num=100, mode='train/')
+
+traindata,trainlabel,trainattr = load_data(train_classes, num='max', mode='train/')
 np.save(path+'traindata.npy',traindata)
 np.save(path+'trainlabel.npy',trainlabel)
+np.save(path+'trainattr.npy',trainattr)
 
-print(traindata.shape,trainlabel.shape)
+print(traindata.shape,trainlabel.shape,trainattr.shape)
 
-testdata,testlabel = load_data(test_classes, num=100, mode='valid/')
+testdata,testlabel,testattr = load_data(test_classes, num='max', mode='valid/')
 np.save(path+'testdata.npy',testdata)
 np.save(path+'testlabel.npy',testlabel)
+np.save(path+'testattr.npy',testattr)
 
-print(testdata.shape,testlabel.shape)
+print(testdata.shape,testlabel.shape,testattr.shape)
 

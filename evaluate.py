@@ -163,7 +163,74 @@ class LossHistory(keras.callbacks.Callback):
         plt.legend(loc="upper right")
         plt.show()
 
+def classifier_load_data(dataset, reload_data=0):
 
+    input_shape = -1
+    num_classes = -1
+
+    if dataset == 'SUN':
+        num_classes = 725
+        input_shape = (128,)
+    elif dataset == 'cifar10':
+        num_classes = 10
+        input_shape = (28,)
+    elif dataset == 'plant':
+        num_classes = 38
+        input_shape = (224,)
+    elif dataset == 'AwA2':
+        num_classes = 50
+        input_shape = (128,)
+    elif dataset == 'CUB':
+        num_classes = 200
+        input_shape = (128,)
+
+    data, label, mean_unseen, unseen_y = -1, -1, -1, -1
+        
+    if reload_data == '0':
+        data = np.load('data/'+ dataset +'/classifier/seen_classifier_data.npy')
+        label = np.load('data/'+ dataset +'/classifier/seen_classifier_label.npy')
+        mean_unseen = np.load('data/'+ dataset +'/classifier/unseen_classifier_data.npy')
+        unseen_y = np.load('data/'+ dataset +'/classifier/unseen_classifier_label.npy')
+    elif reload_data == '1':
+    ####---- seen class
+        x_train = np.load('data/'+ dataset +'/x_train.npy')
+        x_test = np.load('data/'+ dataset +'/x_test.npy')
+        y_train = np.load('data/'+ dataset +'/y_train.npy')
+        y_test = np.load('data/'+ dataset +'/y_test.npy')
+
+    ####---- unseen class
+        unseen_x = np.load('data/'+ dataset +'/testdata.npy')
+        unseen_y = np.load('data/'+ dataset +'/testlabel.npy')
+
+    ####---- 
+        y_train = to_categorical(y_train, num_classes)
+        y_test = to_categorical(y_test, num_classes)
+        unseen_y = to_categorical(unseen_y, num_classes)
+    
+        y_enc = load_model('model/'+ dataset + '/y_encoder.h5', custom_objects={'Scaler': Scaler})
+        mean_enc = load_model('model/'+ dataset + '/encoder.h5', custom_objects={'Scaler': Scaler, 'Sampling': Sampling, 'Parm_layer': Parm_layer})
+        
+
+
+        ym = y_enc.predict(np.eye(num_classes))
+
+        mean_train = mean_enc.predict([x_train], batch_size=200)
+        var_train = var_enc.predict([x_train], batch_size=200)
+        mean_test = mean_enc.predict([x_test], batch_size=200)
+        var_test = var_enc.predict([x_test], batch_size=200)
+    
+        mean_unseen = mean_enc.predict([unseen_x], batch_size=200)
+        var_unseen = var_enc.predict([unseen_x], batch_size=200)
+    
+        data = np.concatenate((mean_train, mean_test))
+        label = np.concatenate((y_train, y_test))
+
+        np.save('data/'+ dataset +'/classifier/seen_classifier_data.npy', data)
+        np.save('data/'+ dataset +'/classifier/seen_classifier_label.npy', label)
+        np.save('data/'+ dataset +'/classifier/unseen_classifier_data.npy', mean_unseen)
+        np.save('data/'+ dataset +'/classifier/unseen_classifier_label.npy', unseen_y)
+
+    return data, label, mean_unseen, unseen_y
 
 def classifier(data, input_shape, num_classes, model_path):
 
@@ -206,6 +273,28 @@ def classifier(data, input_shape, num_classes, model_path):
     model.save(model_path)
     history.loss_plot('epoch')
 
+def make_plant_attr_file():
+
+    with open('data/plant/attr.txt', 'r') as f:
+        attr = f.readlines()
+
+    for i in range(38):
+        attr[i] = attr[i][:-1].split(' ')
+
+    np.save('data/'+ 'plant' +'/class_attr.npy', np.array(attr))
+
+def make_AwA2_attr_file():
+
+    attr = pd.read_csv('data/AwA2/diff/predicate-matrix-continuous.txt',header=None,sep = '\t')
+    attr = [list(filter(('').__ne__, attr.loc[i][0].split(' '))) for i in range(attr.shape[0])]
+
+    for i in range(len(attr)):
+        for j in range(len(attr[0])):
+            attr[i][j] = float(attr[i][j])
+
+    np.save('data/'+ 'AwA2' +'/class_attr.npy', np.array(attr))
+
+
 def make_SUN_attr_file():
     ### output = num_classes * num_attr
 
@@ -217,7 +306,7 @@ def make_SUN_attr_file():
     images = scipy.io.loadmat('data/'+ dataset +'/images.mat')
 
     attr_list = [ [] for x in range(725)]
-        
+    
     for i in range(len(images['images'])):#
         split_class_idx = images['images'][i][0][0].find('/', 2)
 
@@ -265,37 +354,40 @@ def diff(dataset='CUB'):
 
     if dataset == 'CUB':
         num_classes = 200
-        seen_y = np.load('data/'+ dataset +'/trainlabel.npy')
-        unseen_y = np.load('data/'+ dataset +'/testlabel.npy')
-        attr = np.load('data/'+ dataset +'/class_attr.npy')
+    elif dataset == 'SUN':
+        num_classes = 725
+    elif dataset == 'AwA2':
+        num_classes = 50
 
-        y_enc = load_model('model/'+ dataset + '/y_encoder_scale.h5', custom_objects={'Scaler': Scaler})
-        learned_enc = load_model('model/'+ dataset + '/learned_encoder.h5', custom_objects={'Scaler': Scaler, 'Sampling': Sampling})
-        attr_dec = load_model('model/'+ dataset + '/attr_decoder.h5')
+    seen_y = np.load('data/'+ dataset +'/trainlabel.npy')
+    unseen_y = np.load('data/'+ dataset +'/testlabel.npy')
+    attr = np.load('data/'+ dataset +'/class_attr.npy')
 
-        ym = y_enc.predict(np.eye(num_classes))
-        ym = learned_enc.predict(ym)
-        ym = attr_dec.predict(ym)
-        
-        sum_seen_diff = 0
-        sum_unseen_diff = 0
-        cnt_seen = 0
-        cnt_unseen = 0
-        for i in range(num_classes):
-            attr[i] = attr[i] + np.repeat([1e-1], len(attr[i]))
-            if str(i) in seen_y:
-                print(np.sum(np.abs(ym[i] - attr[i]) / attr[i]) / len(attr[i]))
-                sum_seen_diff += np.sum(np.abs(ym[i] - attr[i]) / attr[i]) / len(attr[i])
-                cnt_seen += 1
-            elif str(i) in unseen_y:
-                print(np.sum(np.abs(ym[i] - attr[i]) / attr[i]) / len(attr[i]))
-                sum_unseen_diff += np.sum(np.abs(ym[i] - attr[i]) / attr[i]) / len(attr[i])
-                cnt_unseen += 1
-            else:
-                print('error')
+    y_enc = load_model('model/'+ dataset + '/y_encoder.h5', custom_objects={'Scaler': Scaler})
+    learned_enc = load_model('model/'+ dataset + '/learned_encoder.h5', custom_objects={'Scaler': Scaler, 'Sampling': Sampling})
+    attr_dec = load_model('model/'+ dataset + '/attr_decoder.h5')
 
-        print(sum_seen_diff / cnt_seen)
-        print(sum_unseen_diff / cnt_unseen)
+    ym = y_enc.predict(np.eye(num_classes))
+    ym = learned_enc.predict(ym)
+    ym = attr_dec.predict(ym)
+
+    sum_seen_diff = 0
+    sum_unseen_diff = 0
+    cnt_seen = 0
+    cnt_unseen = 0
+    for i in range(num_classes):
+        attr[i] = attr[i] + np.repeat([1e-1], len(attr[i]))
+        if str(i) in seen_y:
+            sum_seen_diff += np.sum(np.abs(ym[i] - attr[i]) / attr[i]) / len(attr[i])
+            cnt_seen += 1
+        elif str(i) in unseen_y:
+            sum_unseen_diff += np.sum(np.abs(ym[i] - attr[i]) / attr[i]) / len(attr[i])
+            cnt_unseen += 1
+        else:
+            print('error')
+
+    print('seen class acc : ' + sum_seen_diff / cnt_seen)
+    print('unseen class acc : ' + sum_unseen_diff / cnt_unseen)
         
 
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
@@ -305,72 +397,10 @@ def main():
     #---------------
     argv = sys.argv
     dataset = argv[1]
-    reload_data = argv[2]
+    method = argv[2]
+    reload_data = argv[3]
 
-    input_shape = -1
-    num_classes = -1
-
-    if dataset == 'SUN':
-        num_classes = 725
-        input_shape = (128,)
-    elif dataset == 'cifar10':
-        num_classes = 10
-        input_shape = (28,)
-    elif dataset == 'plant':
-        num_classes = 38
-        input_shape = (224,)
-    elif dataset == 'AwA2':
-        num_classes = 50
-        input_shape = (128,)
-    elif dataset == 'CUB':
-        num_classes = 200
-        input_shape = (128,)
-
-    data, label, mean_unseen, unseen_y = -1, -1, -1, -1
-        
-    if reload_data == '0':
-        data = np.load('data/'+ dataset +'/classifier/seen_classifier_data.npy')
-        label = np.load('data/'+ dataset +'/classifier/seen_classifier_label.npy')
-        mean_unseen = np.load('data/'+ dataset +'/classifier/unseen_classifier_data.npy')
-        unseen_y = np.load('data/'+ dataset +'/classifier/unseen_classifier_label.npy')
-    elif reload_data == '1':
-    ####---- seen class
-        x_train = np.load('data/'+ dataset +'/x_train.npy')
-        x_test = np.load('data/'+ dataset +'/x_test.npy')
-        y_train = np.load('data/'+ dataset +'/y_train.npy')
-        y_test = np.load('data/'+ dataset +'/y_test.npy')
-
-    ####---- unseen class
-        unseen_x = np.load('data/'+ dataset +'/testdata.npy')
-        unseen_y = np.load('data/'+ dataset +'/testlabel.npy')
-
-    ####---- 
-        y_train = to_categorical(y_train, num_classes)
-        y_test = to_categorical(y_test, num_classes)
-        unseen_y = to_categorical(unseen_y, num_classes)
-    
-        y_enc = load_model('model/'+ dataset + '/y_encoder_scale.h5', custom_objects={'Scaler': Scaler})
-        mean_enc = load_model('model/'+ dataset + '/mean_encoder_scale.h5', custom_objects={'Scaler': Scaler})
-        var_enc = load_model('model/'+ dataset + '/var_encoder_scale.h5', custom_objects={'Scaler': Scaler})
-
-
-        ym = y_enc.predict(np.eye(num_classes))
-
-        mean_train = mean_enc.predict([x_train], batch_size=200)
-        var_train = var_enc.predict([x_train], batch_size=200)
-        mean_test = mean_enc.predict([x_test], batch_size=200)
-        var_test = var_enc.predict([x_test], batch_size=200)
-    
-        mean_unseen = mean_enc.predict([unseen_x], batch_size=200)
-        var_unseen = var_enc.predict([unseen_x], batch_size=200)
-    
-        data = np.concatenate((mean_train, mean_test))
-        label = np.concatenate((y_train, y_test))
-
-        np.save('data/'+ dataset +'/classifier/seen_classifier_data.npy', data)
-        np.save('data/'+ dataset +'/classifier/seen_classifier_label.npy', label)
-        np.save('data/'+ dataset +'/classifier/unseen_classifier_data.npy', mean_unseen)
-        np.save('data/'+ dataset +'/classifier/unseen_classifier_label.npy', unseen_y)
+    method = method.split(',')
 
     '''
     print('================kmeans=====================================')
@@ -383,21 +413,20 @@ def main():
     
     kmeans(data, label, 10)
     '''
+    if str(0) in method:
+        print('================classifier=====================================')
+        data, label, mean_unseen, unseen_y = classifier_load_data(dataset, reload_data)
 
-    print('================classifier=====================================')
-    print('================seen class acc=====================================')
-    classifier([data, label], input_shape, num_classes, 'model/' + dataset + '/classifier_seen.h5')
+        print('================seen class acc=====================================')
+        classifier([data, label], input_shape, num_classes, 'model/' + dataset + '/classifier_seen.h5')
+        print('================unseen class acc=====================================')
+        classifier([mean_unseen, unseen_y], input_shape, num_classes, 'model/' + dataset + '/classifier_unseen.h5')
 
-    print('================unseen class acc=====================================')
-    classifier([mean_unseen, unseen_y], input_shape, num_classes, 'model/' + dataset + '/classifier_unseen.h5')
-
-
-    print('================difference between CE and LCE=====================================')
-    print('================seen class acc=====================================')
-    #classifier([data, label], input_shape, num_classes, 'model/' + dataset + '/classifier_seen.h5')
+    if str(1) in method:
+        print('================difference between CE and LCE=====================================')
+        diff(dataset)
 
 
 
 #main()
-diff()
-#make_CUB_attr_file()
+#make_AwA2_attr_file()

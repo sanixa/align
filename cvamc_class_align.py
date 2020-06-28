@@ -145,19 +145,25 @@ dataset = argv[1]
 
 if dataset == 'SUN':
     class_input_shape = (102, )
-    learned_input_shape = (128, )
+    learned_input_shape = (256, )
     class_output_dim = 102
-    learned_output_dim = 128
+    learned_output_dim = 256
 elif dataset == 'CUB':
     class_input_shape = (312, )
-    learned_input_shape = (128, )
+    learned_input_shape = (256, )
     class_output_dim = 312
-    learned_output_dim = 128
+    learned_output_dim = 256
 elif dataset == 'AwA2':
     class_input_shape = (85, )
-    learned_input_shape = (128, )
+    learned_input_shape = (256, )
     class_output_dim = 85
-    learned_output_dim = 224
+    learned_output_dim = 256
+elif dataset == 'plant':
+    class_input_shape = (85, )
+    learned_input_shape = (256, )
+    class_output_dim = 85
+    learned_output_dim = 256
+
 
 
 
@@ -173,7 +179,7 @@ mean_test = enc.predict([data_test], batch_size=200)
 
 latent_dim = 128
 intermediate_dim = 128
-epochs = 10
+epochs = 1000
 
 
 
@@ -194,15 +200,6 @@ scaler = Scaler()
 z_class_mean = scaler(z_mean, mode='positive')
 z_class_std = scaler(z_std, mode='negative')
 
-'''
-def sampling(args):
-    z_mean, z_log_var = args
-    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim))
-    return z_mean + K.exp(z_log_var / 2) * epsilon
-
-# 重参数层，相当于给输入加入噪声
-z_class = Lambda(sampling, output_shape=(latent_dim,))([z_class_mean, z_class_std])
-'''
 sampling = Sampling()
 z_class = sampling([z_class_mean, z_class_std])
 
@@ -223,15 +220,6 @@ scaler = Scaler()
 z_learned_mean = scaler(z_mean, mode='positive')
 z_learned_std = scaler(z_std, mode='negative')
 
-'''
-def sampling(args):
-    z_mean, z_log_var = args
-    epsilon = K.random_normal(shape=(K.shape(z_mean)[0], latent_dim))
-    return z_mean + K.exp(z_log_var / 2) * epsilon
-
-# 重参数层，相当于给输入加入噪声
-z_learned = Lambda(sampling, output_shape=(latent_dim,))([z_learned_mean, z_learned_std])
-'''
 sampling = Sampling(latent_dim)
 z_learned = sampling([z_learned_mean, z_learned_std])
 
@@ -326,6 +314,4 @@ learned_encoder.save('model/' + dataset + '/learned_encoder.h5')
 
 class_decoder.save('model/' + dataset + '/attr_decoder.h5')
 learned_decoder.save('model/' + dataset + '/learned_decoder.h5')
-
-
 
