@@ -2,6 +2,6 @@
 
 data     ok    ok   ok   ok
 
-cvamc   ok    no     no   no
+cvamc   ok    ok     ok   ok
 
-align   ok   no   no   no
+align   ok   no   ok   ok

@@ -161,8 +161,11 @@ elif dataset == 'CUB':
 seen_x = np.load('data/'+ dataset +'/traindata.npy')
 seen_y = np.load('data/'+ dataset +'/trainlabel.npy')
 
+
+
 if dataset == 'plant':
     seen_x = seen_x / 255.
+
 
 x_train, x_test, y_train, y_test = train_test_split(seen_x, seen_y, test_size=0.20, random_state=412)
 
@@ -188,6 +191,7 @@ y_test = to_categorical(y_test, num_classes)
 
 
 x_in = Input(shape=input_shape)
+x_in_shape = K.int_shape(x_in)
 x = x_in
 ###############input_1#########################
 mc1 = load_model('resnet50.h5')
@@ -262,11 +266,18 @@ for i in range(2):
     x = LeakyReLU(0.2)(x)
     filters //= 2
 
-outputs = Conv2DTranspose(filters=3,
+x = Conv2DTranspose(filters=3,
                           kernel_size=kernel_size,
                           activation='sigmoid',
                           padding='same')(x)
 
+x = Flatten()(x)
+x = Dense(intermediate_dim, activation='relu')(x)
+x = BatchNormalization()(x)
+x = Dropout(0.2)(x)
+x = Dense(x_in_shape[1] * x_in_shape[2] * x_in_shape[3], activation='relu')(x)
+x = BatchNormalization()(x)
+outputs = Dropout(0.2)(x)
 # 搭建为一个独立的模型
 decoder = Model(latent_inputs, outputs)
 
@@ -281,10 +292,10 @@ for layer in vae.layers:
 
 
 x_in_flat = Flatten()(x_in)
-x_out_flat = Flatten()(x_out)
+#x_out_flat = Flatten()(x_out)
 # xent_loss是重构loss，kl_loss是KL loss
 
-xent_loss = 0.5 * K.sum(K.categorical_crossentropy(x_in_flat, x_out_flat), axis=-1)#K.mean((x_in_flat - x_out_flat)**2)
+xent_loss = 0.5 * K.sum(K.categorical_crossentropy(x_in_flat, x_out), axis=-1)#K.mean((x_in_flat - x_out_flat)**2)
 
 # 只需要修改K.square(z_mean)为K.square(z_mean - yh)，也就是让隐变量向类内均值看齐
 kl_loss = - 0.5 * K.sum(1 + z_plus_log_var - K.square(z_plus_mean - yh) - K.exp(z_plus_log_var), axis=-1)

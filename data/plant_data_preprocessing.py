@@ -55,6 +55,7 @@ def load_data(data, num, mode):
 
     for i in range(38):
         attr[i] = attr[i][:-1].split(' ')
+        attr[i] = [float(x) for x in attr[i]]
 
     for item in data.iloc[:,0].values.tolist():
         tup = load_Img(path+mode+item,read_num=read_num)
