@@ -13,6 +13,7 @@ from __future__ import print_function
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
+from sklearn import preprocessing
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 import os, sys
@@ -162,7 +163,6 @@ seen_x = np.load('data/'+ dataset +'/traindata.npy')
 seen_y = np.load('data/'+ dataset +'/trainlabel.npy')
 
 
-
 if dataset == 'plant':
     seen_x = seen_x / 255.
 
@@ -250,10 +250,10 @@ z = sampling([z_plus_mean, z_plus_log_var])
 # 解码层，也就是生成器部分
 # 先搭建为一个独立的模型，然后再调用模型
 latent_inputs = Input(shape=(latent_dim,))
-x = Dense(intermediate_dim, activation='relu')(latent_inputs)
-x = BatchNormalization()(x)
-x = Dropout(0.2)(x)
-x = Dense(shape[1] * shape[2] * shape[3], activation='relu')(x)
+#x = Dense(intermediate_dim, activation='relu')(latent_inputs)
+#x = BatchNormalization()(x)
+#x = Dropout(0.2)(x)
+x = Dense(shape[1] * shape[2] * shape[3], activation='relu')(latent_inputs)
 x = BatchNormalization()(x)
 x = Dropout(0.2)(x)
 x = Reshape((shape[1], shape[2], shape[3]))(x)

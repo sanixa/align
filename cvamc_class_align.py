@@ -172,24 +172,26 @@ enc = load_model('model/' + dataset + '/encoder.h5', custom_objects={'Scaler': S
 data = np.load('data/'+ dataset +'/traindata.npy')
 attr = np.load('data/'+ dataset +'/trainattr.npy')
 
+if dataset == 'plant':
+    data = data / 255.
 
-
-data_train, data_test, attr_train, attr_test = train_test_split(data, attr, test_size=0.20, random_state=42)
+data_train, data_test, attr_train, attr_test = train_test_split(data, attr, test_size=0.20, random_state=412)
 
 mean_train = enc.predict([data_train])
 mean_test = enc.predict([data_test])
+
 
 np.save('data/'+ dataset +'/conv_train_data.npy', mean_train)
 np.save('data/'+ dataset +'/conv_test_data.npy', mean_test)
 np.save('data/'+ dataset +'/attr_train_data.npy', attr_train)
 np.save('data/'+ dataset +'/attr_test_data.npy', attr_test)
 
-'''
-mean_train = np.load('data/'+ dataset +'/conv_train_data.npy')
-mean_test = np.load('data/'+ dataset +'/conv_test_data.npy')
-attr_train = np.load('data/'+ dataset +'/attr_train_data.npy')
-attr_test = np.load('data/'+ dataset +'/attr_test_data.npy')
-'''
+
+#mean_train = np.load('data/'+ dataset +'/conv_train_data.npy')
+#mean_test = np.load('data/'+ dataset +'/conv_test_data.npy')
+#attr_train = np.load('data/'+ dataset +'/attr_train_data.npy')
+#attr_test = np.load('data/'+ dataset +'/attr_test_data.npy')
+
 
 latent_dim = 128
 intermediate_dim = 128

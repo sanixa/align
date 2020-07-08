@@ -24,7 +24,7 @@ def load_Img(imgDir,read_num = 'max'):
         imgNum = len(imgs)
     else:
         imgNum = read_num
-    data = np.empty((imgNum,image_size,image_size,3),dtype="float16")
+    data = np.empty((imgNum,image_size,image_size,3),dtype="float32")
     print(imgNum)
     for i in range (imgNum):
         img = Image.open(imgDir+"/"+imgs[i])
@@ -39,7 +39,15 @@ def load_Img(imgDir,read_num = 'max'):
             temp[:,:,0] = arr
             temp[:,:,1] = arr
             temp[:,:,2] = arr
-            arr = temp        
+            arr = temp
+        if arr.shape == (image_size,image_size,4):
+            temp = np.empty((image_size,image_size,3),dtype="float16")
+            temp[:,:,0] = arr[:,:,0]
+            temp[:,:,1] = arr[:,:,1]
+            temp[:,:,2] = arr[:,:,2]
+            arr = temp
+        if arr.shape != (image_size,image_size,3):
+            print('error', imgDir)
         data[i,:,:,:] = arr
     return data,imgNum 
 
@@ -56,7 +64,7 @@ def load_data(data, num, mode):
     for i in range(38):
         attr[i] = attr[i][:-1].split(' ')
         attr[i] = [float(x) for x in attr[i]]
-
+    
     for item in data.iloc[:,0].values.tolist():
         tup = load_Img(path+mode+item,read_num=read_num)
         data_list.append(tup[0])
@@ -70,14 +78,14 @@ train_classes = pd.read_csv(path+'trainclasses.txt',header=None,sep = '\t')
 test_classes = pd.read_csv(path+'testclasses.txt',header=None,sep = '\t')
 
 
-traindata,trainlabel,trainattr = load_data(train_classes, num='max', mode='train/')
+traindata,trainlabel,trainattr = load_data(train_classes, num=500, mode='train/')
 np.save(path+'traindata.npy',traindata)
 np.save(path+'trainlabel.npy',trainlabel)
 np.save(path+'trainattr.npy',trainattr)
 
 print(traindata.shape,trainlabel.shape,trainattr.shape)
 
-testdata,testlabel,testattr = load_data(test_classes, num='max', mode='valid/')
+testdata,testlabel,testattr = load_data(test_classes, num=500, mode='train/')
 np.save(path+'testdata.npy',testdata)
 np.save(path+'testlabel.npy',testlabel)
 np.save(path+'testattr.npy',testattr)

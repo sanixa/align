@@ -214,6 +214,9 @@ def classifier_load_data(dataset, reload_data=0):
         unseen_y = np.load('data/'+ dataset +'/testlabel.npy')
 
     ####---- 
+        if dataset == 'plant':
+            seen_x = seen_x / 255.
+            unseen_x = unseen_x / 255.
         seen_y = to_categorical(seen_y, num_classes)
         unseen_y = to_categorical(unseen_y, num_classes)
         enc = load_model('model/'+ dataset + '/encoder.h5', custom_objects={'Scaler': Scaler, 'Sampling': Sampling, 'Parm_layer': Parm_layer})
