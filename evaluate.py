@@ -320,20 +320,20 @@ def classifier(data, input_shape, model_path):
     num_classes = len(label_list)
     '''
     x_in = Input(shape=input_shape)
-    x = Dense(8192, activation='relu')(x_in)
+    x = Dense(512, activation='relu')(x_in)
     x = BatchNormalization()(x)
-    x = Dropout(0.5)(x)
-    x = Dense(4096, activation='sigmoid')(x_in)
-    x = BatchNormalization()(x)
-    x = Dropout(0.5)(x)
-
+    x = Dropout(0.2)(x)
+    x = Dense(256, activation='relu')(x_in)
+    x = Dropout(0.2)(x)
+    x = Dense(256, activation='relu')(x_in)
+    x = Dropout(0.2)(x)
     output = Dense(2, activation='softmax')(x)
     model = Model(inputs=[x_in], outputs=[output])
 
 
 
     model.compile(loss=keras.losses.categorical_crossentropy,
-              optimizer=keras.optimizers.RMSprop(),
+              optimizer=keras.optimizers.RMSprop(1e-3),
               metrics=['accuracy'])
 
     history = LossHistory()
@@ -361,15 +361,14 @@ def classifier(data, input_shape, model_path):
 def make_plant_attr_file():
     ####----------------given class attr--------------------------
 
-    with open('data/plant/attr.txt', 'r') as f:
+    with open('data/plant/'+'attr.txt', 'r') as f:
         attr = f.readlines()
 
-    for i in range(38):
+    for i in range(35):
         attr[i] = attr[i][:-1].split(' ')
         attr[i] = [float(x) for x in attr[i]]
-
-
-    np.save('data/'+ 'plant' +'/class_attr.npy', np.array(attr))
+    np.save('data/plant/class_attr.npy',np.array(attr).T)
+    attr = np.array(attr).T.tolist()
 
     ####----------------learned class attr----------compute avg E(x) as learned class attr----------------
     temp_sum_list = [[] for x in range(38)]
@@ -665,19 +664,19 @@ def main():
 
     if dataset == 'SUN':
         num_classes = 717
-        input_shape = (256,)
+        input_shape = (64,)
     elif dataset == 'cifar10':
         num_classes = 10
         input_shape = (28,)
     elif dataset == 'plant':
         num_classes = 38
-        input_shape = (256,)
+        input_shape = (64,)
     elif dataset == 'AwA2':
         num_classes = 50
-        input_shape = (256,)
+        input_shape = (64,)
     elif dataset == 'CUB':
         num_classes = 200
-        input_shape = (256,)
+        input_shape = (64,)
 
     '''
     print('================kmeans=====================================')

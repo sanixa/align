@@ -145,28 +145,28 @@ dataset = argv[1]
 
 if dataset == 'SUN':
     class_input_shape = (102, )
-    learned_input_shape = (256, )
+    learned_input_shape = (64, )
     class_output_dim = 102
-    learned_output_dim = 256
+    learned_output_dim = 64
 elif dataset == 'CUB':
     class_input_shape = (312, )
-    learned_input_shape = (256, )
+    learned_input_shape = (64, )
     class_output_dim = 312
-    learned_output_dim = 256
+    learned_output_dim = 64
 elif dataset == 'AwA2':
     class_input_shape = (85, )
-    learned_input_shape = (256, )
+    learned_input_shape = (64, )
     class_output_dim = 85
-    learned_output_dim = 256
+    learned_output_dim = 64
 elif dataset == 'plant':
-    class_input_shape = (85, )
-    learned_input_shape = (256, )
-    class_output_dim = 85
-    learned_output_dim = 256
+    class_input_shape = (35, )
+    learned_input_shape = (64, )
+    class_output_dim = 35
+    learned_output_dim = 64
 
 
 
-
+'''
 enc = load_model('model/' + dataset + '/encoder.h5', custom_objects={'Scaler': Scaler, 'Sampling': Sampling, 'Parm_layer': Parm_layer})
 
 data = np.load('data/'+ dataset +'/traindata.npy')
@@ -185,12 +185,12 @@ np.save('data/'+ dataset +'/conv_train_data.npy', mean_train)
 np.save('data/'+ dataset +'/conv_test_data.npy', mean_test)
 np.save('data/'+ dataset +'/attr_train_data.npy', attr_train)
 np.save('data/'+ dataset +'/attr_test_data.npy', attr_test)
+'''
 
-
-#mean_train = np.load('data/'+ dataset +'/conv_train_data.npy')
-#mean_test = np.load('data/'+ dataset +'/conv_test_data.npy')
-#attr_train = np.load('data/'+ dataset +'/attr_train_data.npy')
-#attr_test = np.load('data/'+ dataset +'/attr_test_data.npy')
+mean_train = np.load('data/'+ dataset +'/conv_train_data.npy')
+mean_test = np.load('data/'+ dataset +'/conv_test_data.npy')
+attr_train = np.load('data/'+ dataset +'/attr_train_data.npy')
+attr_test = np.load('data/'+ dataset +'/attr_test_data.npy')
 
 
 latent_dim = 128
@@ -296,11 +296,11 @@ vae_loss = K.mean(xent_loss + cross_xent_loss + kl_loss + align_loss)
 
 # add_loss是新增的方法，用于更灵活地添加各种loss
 vae.add_loss(vae_loss)
-vae.compile(optimizer='adam')
+vae.compile(optimizer=keras.optimizers.RMSprop(1e-2))
 vae.summary()
 
 history = LossHistory()
-early_stopping = EarlyStopping(monitor='val_loss', patience=20, verbose=0)
+early_stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=0)
 
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_loss', 
                                             patience=10, 

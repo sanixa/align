@@ -1,6 +1,6 @@
 
 import numpy as np
-np.random.seed(123)
+np.random.seed(9)
 
 import pandas as pd
 import numpy as np
@@ -142,7 +142,7 @@ def main():
     NUM_CLASS = 38
     NUM_ATTR = 35
     DATASET_PATH = '/home/uscc/New Plant Diseases Dataset(Augmented)/'
-    IMAGE_PATH = '/home/uscc/New Plant Diseases Dataset(Augmented)/train/Apple___Apple_scab/0a5e9323-dbad-432d-ac58-d291718345d9___FREC_Scab 3417_90deg.JPG'
+    IMAGE_PATH = '/home/uscc/New Plant Diseases Dataset(Augmented)/train/Tomato___healthy/0a0d6a11-ddd6-4dac-8469-d5f65af5afca___RS_HL 0555_new30degFlipLR.JPG'
     IMAGE_SIZE = 128
     # ---------------------------------------------------------------------------------------------------------------- #
     # ---------------------------------------------------------------------------------------------------------------- #
@@ -170,27 +170,29 @@ def main():
     
     tree = KDTree(class_attr)
     dist_5, index_5 = tree.query(CE, k=5)
-    pred_labels = [classnames[index] for index in index_5[0]]
+    pred_labels = [dic_class2name[index] for index in index_5[0]]
     print(pred_labels)
     print(true_label)
     
     ##query five closest image
+    SAMPLE_SIZE = 50
     cand_list = []
     for i in range(classname.shape[0]):
         imgDir = DATASET_PATH + 'train/' + classname.loc[i][1] 
         imgs = os.listdir(imgDir)
         indices = list(range(500))
         np.random.shuffle(indices)
-        for i in range(10):
+        for i in range(SAMPLE_SIZE):
             cand_list.append(imgDir + '/' +imgs[indices[i]])
+    image_name_list = cand_list
     cand_list = Learned_Latent_Class_Embedding(cand_list)
     cand_list = Aligning(cand_list)
     
     tree = KDTree(cand_list)
     dist_5, index_5 = tree.query(CE, k=5)
-    pred_images = [classnames[int(math.floor(index/10))] for index in index_5[0]]
+    pred_images = [dic_class2name[int(math.floor(index/SAMPLE_SIZE))] for index in index_5[0]]
     print(pred_images)
-    image_name = [cand_list[index] for index in index_5[0]]
+    image_name = [image_name_list[index] for index in index_5[0]]
     print(image_name)
 
 if __name__ == '__main__':
