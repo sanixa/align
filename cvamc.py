@@ -131,11 +131,11 @@ class Parm_layer(keras.layers.Layer):
         return dict(list(base_config.items()) + list(config.items()))
 
 #os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-batch_size = 256
+batch_size = 64
 input_shape = -1
 kernel_size = 3
-filters = 32
-latent_dim = 256
+filters = 64
+latent_dim = 64
 intermediate_dim = 128
 epochs = 1000
 num_classes = -1
@@ -197,8 +197,9 @@ x = x_in
 mc1 = load_model('resnet50.h5')
 mc1_x = mc1(x)
 mc1_h = Dense(intermediate_dim, activation='relu')(mc1_x)
+mc1_h = Dropout(0.5)(mc1_h)
 ###############input_2#########################
-for i in range(2):
+for i in range(3):
     filters *= 2
     x = Conv2D(filters=filters,
                kernel_size=kernel_size,
@@ -210,12 +211,14 @@ for i in range(2):
 shape = K.int_shape(x)
 x = Flatten()(x)
 h = Dense(intermediate_dim, activation='relu')(x)
-
+h = Dropout(0.5)(h)
 ###################input_3#########################
 y_in = Input(shape=(num_classes,)) # 输入类别
 y = Dense(intermediate_dim)(y_in)
 y = BatchNormalization()(y)
-y = Dropout(0.2)(y)
+y = Dropout(0.5)(y)
+y = Dense(intermediate_dim)(y_in)
+y = Dropout(0.5)(y)
 yh = Dense(latent_dim)(y) # 这里就是直接构建每个类别的均值
 
 
@@ -258,7 +261,7 @@ x = BatchNormalization()(x)
 x = Dropout(0.2)(x)
 x = Reshape((shape[1], shape[2], shape[3]))(x)
 
-for i in range(2):
+for i in range(3):
     x = Conv2DTranspose(filters=filters,
                         kernel_size=kernel_size,
                         strides=2,
@@ -268,16 +271,17 @@ for i in range(2):
 
 x = Conv2DTranspose(filters=3,
                           kernel_size=kernel_size,
-                          activation='sigmoid',
+                          activation='relu',
                           padding='same')(x)
 
 x = Flatten()(x)
 x = Dense(intermediate_dim, activation='relu')(x)
 x = BatchNormalization()(x)
-x = Dropout(0.2)(x)
-x = Dense(x_in_shape[1] * x_in_shape[2] * x_in_shape[3], activation='relu')(x)
-x = BatchNormalization()(x)
-outputs = Dropout(0.2)(x)
+x = Dropout(0.5)(x)
+x = Dense(intermediate_dim, activation='relu')(x)
+x = Dropout(0.5)(x)
+outputs = Dense(x_in_shape[1] * x_in_shape[2] * x_in_shape[3], activation='relu')(x)
+
 # 搭建为一个独立的模型
 decoder = Model(latent_inputs, outputs)
 
@@ -305,11 +309,11 @@ vae_loss = K.mean(xent_loss + kl_loss)
 
 # add_loss是新增的方法，用于更灵活地添加各种loss
 vae.add_loss(vae_loss)
-vae.compile(optimizer='adam')
+vae.compile(optimizer=keras.optimizers.RMSprop(1e-2))
 vae.summary()
 
 history = LossHistory()
-early_stopping = EarlyStopping(monitor='val_loss', patience=20, verbose=0)
+early_stopping = EarlyStopping(monitor='val_loss', patience=10, verbose=0)
 
 learning_rate_reduction = ReduceLROnPlateau(monitor='val_loss', 
                                             patience=10, 
